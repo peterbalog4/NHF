@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#ifdef _WIN32
-    #include <windows.h>
-#endif
-#include "debugmalloc.h"
+#include <windows.h>
 #include <string.h>
 
 /* int sorokat_szamol(char *fajl){
@@ -31,29 +28,70 @@
     while()
 } */
 
+// Forrás : A sztringet_nagybetusit függvény a 6. heti előadásból lett átvéve.
+void sztringet_nagybetusit(char *sztring) {
+    for (int i = 0; sztring[i] != '\0'; ++i)
+        sztring[i] = toupper(sztring[i]);
+}
+int valaszt_tesztel(char *valasz){
+    if(strcmp(valasz,"IGEN") == 0 || strcmp(valasz,"I") == 0 )
+        return 1;
+    if(strcmp(valasz,"NEM") == 0 || strcmp(valasz,"N") == 0)
+        return 0;
+    else
+        return -1;
+
+
+}
+
 void uj_osszetevo(void){
+    bool van_e;
     do{
-        bool van_e;
-        char valasz[5]; ujosszetevo[51];
-        printf("Van még új összetevõ?");
+        char valasz[5];
+        char ujosszetevo[51];
+        printf("Van meg uj osszetevo?");
         scanf("%s", &valasz);
-        toupper(valasz);
-        if( valasz == "IGEN" || valasz == "I"){
-            FILE *fbe = fopen("osszetevok.txt", "a+");
-            printf("Add meg az új összetevõt:")
+        sztringet_nagybetusit(valasz);
+        if(valaszt_tesztel(valasz)  == 1){
+            FILE *fp;
+            printf("Add meg az uj osszetevot:");
             scanf("%s",&ujosszetevo);
-            strcat(ujosszetevo, '\n');
-            fputs(ujosszetevo, fbe);
-            fclose(fbe);
             van_e = true;
+            strcat(ujosszetevo, '\n');
+            fputs(ujosszetevo, fp);
+            fclose(fp);
         }
-        else if(valasz == "NEM" || valasz == "N") {
+        else if(valaszt_tesztel(valasz) == 0) {
             van_e = false;
         }
         else{
-            printf("Ismeretlen választás kérlek az igen/nem szavakat vagy I/H betût adj meg")
+            printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
             van_e = true;
         }
     }
     while(van_e == true);
+}
+
+
+int main(){
+    SetConsoleCP(1250);
+    SetConsoleOutputCP(1250);
+    uj_osszetevo();
+    return 0;
+}
+
+// Ket string, ket while ciklus, 1. beolvassa a stringet és elmenti a másodikba
+void osszetevo_lista(void){
+    FILE *fp;
+    int i = 0;
+    char c;
+    char **osszetevok;
+    char temp[52];
+    fp = fopen("osszetevok.txt","r");
+    while(fscanf(fp,"%c",c) == 0)
+        while(fscanf(fp,"%c",c) != '/0');
+            temp[i++] = c;
+        strcpy(*osszetevok, temp)
+
+
 }
