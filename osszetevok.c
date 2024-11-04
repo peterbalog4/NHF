@@ -95,3 +95,5 @@ void osszetevo_lista(void){
 
 
 }
+
+// teszt
