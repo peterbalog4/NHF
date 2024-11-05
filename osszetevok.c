@@ -3,20 +3,23 @@
 #include <windows.h>
 #include <string.h>
 
-/* int sorokat_szamol(char *fajl){
-    *fp = fopen(fajl,"r");
-    while(fscanf(fp,c) != EOF){
-        char c = fscanf(fp,c);
-        int sorszamolo = 0
+ int sorokat_szamol(char *fajl){
+    FILE *fp;
+    fp = fopen(fajl,"r");
+    char c;
+    int sorszamolo = 0;
+    while(fscanf(fp,"%c",&c) != 0){
+        c = fscanf(fp,"%c",&c);
         if(c == '\n'){
-            sorszamlo++;
+            sorszamolo++;
         }
         else
             continue;
     }
+    return sorszamolo;
 }
-*/
-//Később kelhet
+
+//Később kellhet
 
 /*void osszetevot_listasit(char *fajl){
     char osszetevok[];
@@ -47,42 +50,49 @@ int valaszt_tesztel(char *valasz){
 void uj_osszetevo(void){
     bool van_e;
     do{
+        FILE *fp;
+        fp = fopen("osszetevok.txt", "a");
         char valasz[5];
         char ujosszetevo[51];
-        printf("Van meg uj osszetevo?");
+        printf("Van még új összetevő?");
         scanf("%s", &valasz);
         sztringet_nagybetusit(valasz);
         if(valaszt_tesztel(valasz)  == 1){
-            FILE *fp;
-            printf("Add meg az uj osszetevot:");
+            printf("Add meg az új összetevőt:");
             scanf("%s",&ujosszetevo);
             van_e = true;
-            strcat(ujosszetevo, '\n');
-            fputs(ujosszetevo, fp);
-            fclose(fp);
-        }
-        else if(valaszt_tesztel(valasz) == 0) {
+            //strcat(ujosszetevo, "\n");
+            fprintf(fp,"%s\n",ujosszetevo);
+        }else if(valaszt_tesztel(valasz) == 0) {
             van_e = false;
+            fclose(fp);
         }
         else{
             printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
             van_e = true;
         }
-    }
-    while(van_e == true);
+    }while(van_e);
 }
 
 
 int main(){
-    SetConsoleCP(1250);
-    SetConsoleOutputCP(1250);
-    uj_osszetevo();
+    system("chcp 65001 >nul");
+    FILE *fp;
+    fp = fopen("osszetevok.txt", "r");
+    int x = sorokat_szamol("osszetevok.txt");
+    printf("%d",x);
+
+
+
+
+
     return 0;
 }
 
 // Ket string, ket while ciklus, 1. beolvassa a stringet és elmenti a másodikba
 void osszetevo_lista(void){
     FILE *fp;
+    int k=0;
     int i = 0;
     char c;
     char **osszetevok;
@@ -91,9 +101,13 @@ void osszetevo_lista(void){
     while(fscanf(fp,"%c",c) == 0)
         while(fscanf(fp,"%c",c) != '/0');
             temp[i++] = c;
-        strcpy(*osszetevok, temp)
+        strcpy(osszetevok[k++], temp);
 
-
+    for(int i=0; i<k;i++){
+        printf("%s",osszetevok[i]);
+    }
 }
+
+
 
 // teszt
