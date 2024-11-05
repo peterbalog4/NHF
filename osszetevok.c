@@ -75,7 +75,7 @@ void uj_osszetevo(void){
 }
 
 
-int main(){
+/* int main(){
     system("chcp 65001 >nul");
     FILE *fp;
     fp = fopen("osszetevok.txt", "r");
@@ -87,7 +87,7 @@ int main(){
 
 
     return 0;
-}
+} */
 
 // Ket string, ket while ciklus, 1. beolvassa a stringet és elmenti a másodikba
 void osszetevo_lista(void){
