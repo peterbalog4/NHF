@@ -3,19 +3,22 @@
 #include <windows.h>
 #include <string.h>
 
+// Megjegyzések a kódhoz:
+// 1. Minden összetevő sztring 52 méretű. A felhasználónak 50 karakter lett "megígérve". A sorokat_szamol függvényem \n karaktereket számol így ez kell,hogy
+// minden sztring végén ott legyen. Így a lezáró nullával együtt minden összetevő sztring 50+1+1 méretű.
  int sorokat_szamol(char *fajl){
     FILE *fp;
     fp = fopen(fajl,"r");
     char c;
     int sorszamolo = 0;
-    while(fscanf(fp,"%c",&c) != 0){
-        c = fscanf(fp,"%c",&c);
+    while(fscanf(fp,"%c",&c) != EOF){
         if(c == '\n'){
             sorszamolo++;
         }
         else
             continue;
     }
+    fclose(fp);
     return sorszamolo;
 }
 
@@ -73,41 +76,71 @@ void uj_osszetevo(void){
         }
     }while(van_e);
 }
-
-
-/* int main(){
-    system("chcp 65001 >nul");
+// NTS: Kell egy függvény ami felszabadítja a listát!!!
+char **osszetevo_lista(){
     FILE *fp;
-    fp = fopen("osszetevok.txt", "r");
-    int x = sorokat_szamol("osszetevok.txt");
-    printf("%d",x);
-
-
-
-
-
-    return 0;
-} */
-
-// Ket string, ket while ciklus, 1. beolvassa a stringet és elmenti a másodikba
-void osszetevo_lista(void){
-    FILE *fp;
-    int k=0;
-    int i = 0;
-    char c;
     char **osszetevok;
-    char temp[52];
+    int meret = sorokat_szamol("osszetevok.txt");
     fp = fopen("osszetevok.txt","r");
-    while(fscanf(fp,"%c",c) == 0)
-        while(fscanf(fp,"%c",c) != '/0');
-            temp[i++] = c;
-        strcpy(osszetevok[k++], temp);
-
-    for(int i=0; i<k;i++){
-        printf("%s",osszetevok[i]);
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+        return NULL;
     }
+    osszetevok = malloc(meret*sizeof(char *));
+    if (osszetevok == NULL){
+        printf("Memóriafoglalási hiba!");
+        return NULL;
+    }
+    for(int i=0;i<meret;i++){
+        osszetevok[i] = malloc(52 * sizeof(char));
+        if (osszetevok[i] == NULL){
+            printf("Memóriafoglalási hiba!");
+            return NULL;
+        }
+        fgets(osszetevok[i],52,fp);
+
+    }
+    fclose(fp);
+    return osszetevok;
 }
 
+void osszetevot_felszabadit(char **osszetevok, int meret){
+    for(int i=0;i<meret;i++){
+        free(osszetevok[i]);
+    }
+    free(osszetevok);
+}
 
+void osszetevot_torol(){
+    int meret = sorokat_szamol("osszetevok.txt");
+    char **lista = osszetevo_lista();
+    int valasztas;
+    FILE *fp;
+    fp = fopen("osszetevok.txt","w");
+    printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
+    for(int i=0;i<meret;i++){
+        printf("%d. %s \n",i+1,lista[i]);
+    }
+    printf("Választás:");
+    scanf("%d",&valasztas);
+    if(valasztas>meret){
+        printf("Nem megfelelő számot adtál meg!");
+        printf("Választás:");
+        scanf("%d",&valasztas);
+    }
+    for(int i=0;i<meret;i++){
+        if (valasztas== i){
+            continue;
+        }
+        else
+            fputs(lista[i],fp);
+    }
+    fclose(fp);
+    osszetevot_felszabadit(lista,meret);
+}
+int main() {
 
-// teszt
+    system("chcp 65001 >nul");
+    uj_osszetevo();
+    osszetevot_torol();
+}
