@@ -36,3 +36,19 @@ int valaszt_tesztel(char *valasz){
 
 
 }
+char **ures_lista(int meret, int charsize){
+char **lista;
+    lista = malloc(meret*sizeof(char *));
+    if (el_lista == NULL){
+        printf("Memóriafoglalási hiba!");
+        return NULL;
+    }
+    for(int i=0;i<meret;i++){
+        lista[i] = malloc(charsize * sizeof(char));
+        if (el_lista[i] == NULL){
+            printf("Memóriafoglalási hiba!");
+            return NULL;
+        }
+    }
+}
+return lista;
