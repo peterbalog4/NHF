@@ -1,18 +1,20 @@
 #include <stdio.h>
 #include <stdbool.h>
-#ifdef _WIN32
-    #include <windows.h>
-#endif
-#include "osszetevok.c"
+#include "osszetevok.h"
+#include "uf.h"
+#include "recept.h"
+// NTS: Meg kell oldani, hogy ki lehessen lépni az exit szóval. + a program csak akkor álljon le ha a főmenüben exitet kap.
 
 void almenu_osszetevo(void);
 void almenu_uj(void);
 void almenu_recept(void);
 void almenu_keres(void);
 
+// A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér vissza.
 void fomenu(void){
     int valasztas;
-    printf("1.Összetevõk \n 2. Új koktékrecept felvétele \n 3. Receptek \n 4. Keresés \n Választás:");
+    printf("NHF | Koktéloskönyv\n");
+    printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
@@ -21,67 +23,83 @@ void fomenu(void){
         case 2:
             almenu_uj();
             break;
-        case 3:
+        /* case 3:
             almenu_recept();
             break;
         case 4:
             almenu_keres();
-            break;
+            break;*/
         default:
             fomenu();
             break;
     }
 }
 
-// A függvényeket megírni !!!
+// Ebből az almenüből érhetőek el az összetevő függvények.
 void almenu_osszetevo(){
     int valasztas;
-    printf("1.Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n Választás:");
+    printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
-        case 1:
+        case 1:{
             uj_osszetevo();
+            fomenu();
             break;
-        case 2:
-            osszetevo_torol();
+        }
+        case 2:{
+            osszetevot_torol();
+            fomenu();
             break;
-        case 3:
-            osszetevo_lista();
+        }
+        case 3: {
+            char **lista;
+            lista = osszetevo_lista();
+            listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
+            almenu_osszetevo();
             break;
+        }
         default:
             almenu_osszetevo();
             break;
     }
 }
 
+// Ebből a függvényből érhetőek el az új receptet létrehozó és összetevőket kezelő függvények.
 void almenu_uj(){
     int valasztas;
-    printf("Van e új összetevő?");
-    printf("1.Van \n 2. Nincs \n 3. Nem tudom\n Választás:");
+    printf(" Van e új összetevő?");
+    printf("\n 1. Van \n 2. Nincs \n 3. Nem tudom\n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
-        case 1:
+        case 1:{
             uj_osszetevo();
+            almenu_uj();
             break;
-        case 2:
+        }
+        case 2:{
             uj_recept();
+            fomenu();
             break;
-        case 3:
-            osszetevo_lista();
+        }
+        case 3:{
+            char **lista = osszetevo_lista();
+            listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
+            almenu_uj();
             break;
+        }
         default:
             almenu_uj();
             break;
     }
 }
-
-void almenu_recept(){
+// Innen lesznek elérhetőek a recept kezelő függvények. Megjegyzés: Még fejlesztés alatt.
+ /* void almenu_recept(){
     int valasztas;
-    printf("1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n Választás:");
+    printf("\n1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
-            almenu_recept_modosit();
+            recept_modosit();
             break;
         case 2:
             recept_torol();
@@ -94,10 +112,10 @@ void almenu_recept(){
             break;
     }
 }
-
+// Innen lesznek elérhetőek a kereső függvények. Megjegyzés: Még fejlesuztés alatt.
 void almenu_keres(){
     int valasztas;
-    printf("1.Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
+    printf("\n1.Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
@@ -114,3 +132,4 @@ void almenu_keres(){
             break;
     }
 }
+*/

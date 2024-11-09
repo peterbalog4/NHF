@@ -1,9 +1,11 @@
-//Megjegyz�sek: Ez az univerz�lis f�ggv�nyk�nyvt�ram. Olyan kicsi f�ggv�nyek amiket a NHF szinte �sszes modulj�ban haszn�lok, ez�rt �sszegy�jt�ttem egy helyre.
 #include <stdio.h>
 #include <stdbool.h>
-#include <windows.h>
 #include <string.h>
 
+//Megjegyzések: Ez az univerzális függvénykönyvtáram. Olyan kicsi függvények amiket a NHF szinte összes moduljában használok, ezért összegyûjtöttem egy helyre.
+
+// Ez a függvény sorokat számol. Az összetevőket és a recepteket tartozó fájlok sorszámolására használom.
+// Az uj_osszetevo fuggveny es az uj_recept fuggveny minden sor végére rak egy \n karaktert így pontosan számol a függvény.
  int sorokat_szamol(char *fajl){
     FILE *fp;
     fp = fopen(fajl,"r");
@@ -20,13 +22,16 @@
     return sorszamolo;
 }
 
-// Forr�s : A sztringet_nagybetusit f�ggv�ny a 6. heti el�ad�sb�l lett �tv�ve.
+// Forrás : A sztringet_nagybetusit függvény a 6. heti elõadásból lett átvéve.
 void sztringet_nagybetusit(char *sztring) {
     for (int i = 0; sztring[i] != '\0'; ++i){
         sztring[i] = toupper(sztring[i]);
     }
 }
+// Egy általános függvény ami a felhasználó által megadott sztringet teszteli. A (y/n) típusú kérdéseknél ezzel a függvényel tesztelek, majd az if ciklusban már csak ellenőrzöm, a visszaadott int-et.
+// Nagyrészt helyspórolás és a copy-paste elkerülése miatt készült.
 int valaszt_tesztel(char *valasz){
+    sztringet_nagybetusit(valasz);
     if(strcmp(valasz,"IGEN") == 0 || strcmp(valasz,"I") == 0 )
         return 1;
     if(strcmp(valasz,"NEM") == 0 || strcmp(valasz,"N") == 0)
@@ -36,19 +41,39 @@ int valaszt_tesztel(char *valasz){
 
 
 }
+// A függvény egy üres pointertömböt hoz létre amiben sztringeket tárolok. A meret adja meg a sztringek számát, a charsize adja meg,hogy a sztringek milyen hosszúak legyenek.
 char **ures_lista(int meret, int charsize){
-char **lista;
+    char **lista;
     lista = malloc(meret*sizeof(char *));
-    if (el_lista == NULL){
-        printf("Mem�riafoglal�si hiba!");
+    if (lista == NULL){
+        printf("Memóriafoglalási hiba!");
         return NULL;
     }
     for(int i=0;i<meret;i++){
         lista[i] = malloc(charsize * sizeof(char));
-        if (el_lista[i] == NULL){
-            printf("Mem�riafoglal�si hiba!");
+        if (lista[i] == NULL){
+            printf("Memóriafoglalási hiba!");
             return NULL;
         }
     }
-}
+    for(int i=0;i<meret;i++){
+        lista[i] = "0";
+    }
+
 return lista;
+}
+
+// Kiírja egy lista összes elemét.
+void listat_kiir(char **lista, int meret){
+    for(int i=0; i<meret;i++){
+        printf("\n %d. %s",i+1,lista[i]);
+    }
+    printf("\n");
+}
+
+// Kiírja egy lista összes elemét egy fájlba.
+void listat_fajlba_ir(char **lista, int meret ,FILE *fp){
+    for(int i=0; i<meret;i++){
+        fprintf(fp, "%s \n",lista[i]);
+    }
+}

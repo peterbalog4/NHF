@@ -1,31 +1,31 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <windows.h>
-#include <string.h>
-#include "uf.h"
-
 // Megjegyzések a kódhoz:
 // 1. Minden összetevő sztring 52 méretű. A felhasználónak 50 karakter lett "megígérve". A sorokat_szamol függvényem \n karaktereket számol így ez kell,hogy
 // minden sztring végén ott legyen. Így a lezáró nullával együtt minden összetevő sztring 50+1+1 méretű.
 // 2. A segédfüggvények az uf.c fájlban vannak.
+// 3. Az összetevő fuggvenyek(uj_osszetevo,osszetevo_lista,osszetevot_torol) jelenleg jól működnek. Viszont vannak dolgok benne amin szeretnék változtatni. Például amit laboron beszéltünk, a sok
+// felesleges fájlnyitogatás. A végleges verzióban a modul és a kód funkcionalitása nem fog változni, de bizonyos dolgokat szeretnék "okosabban" megoldani.
 
-// NTS: Fájlkezelést javítani!!! || Fájlt az elején beolvassa, végén fájlba ír
+// NTS: Fájlkezelést javítani!!! || Fájlt az elején beolvassa, végén fájlba ír.
 
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include "uf.h"
+
+// A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
 void uj_osszetevo(void){
     bool van_e;
     do{
         FILE *fp;
         fp = fopen("osszetevok.txt", "a");
         char valasz[5];
-        char ujosszetevo[51];
+        char ujosszetevo[52];
         printf("Van még új összetevő?");
         scanf("%s", &valasz);
-        sztringet_nagybetusit(valasz);
         if(valaszt_tesztel(valasz)  == 1){
             printf("Add meg az új összetevőt:");
             scanf("%s",&ujosszetevo);
             van_e = true;
-            //strcat(ujosszetevo, "\n");
             fprintf(fp,"%s\n",ujosszetevo);
         }else if(valaszt_tesztel(valasz) == 0) {
             fclose(fp);
@@ -38,6 +38,8 @@ void uj_osszetevo(void){
     }while(van_e);
 }
 
+// A függvény jelenleg működik és használva van, de lehet, hogy a végleges feladatban el lesz hagyva vagy minimálisan lesz használva.
+// Az osszetevo_lista függvény az "osszetevok.txt" fájlban levő adatokat sztringek listájává alakítja.
 char **osszetevo_lista(){
     FILE *fp;
     char **osszetevok;
@@ -65,6 +67,7 @@ char **osszetevo_lista(){
     return osszetevok;
 }
 
+// Felszabadítja az osszetevo_lista által létrehozott listát.
 void osszetevot_felszabadit(char **osszetevok, int meret){
     for(int i=0;i<meret;i++){
         free(osszetevok[i]);
@@ -72,6 +75,7 @@ void osszetevot_felszabadit(char **osszetevok, int meret){
     free(osszetevok);
 }
 
+// A függvény kilistázza az ismert összetevőket és a felhasználó az index megadásával tud belőle törölni
 void osszetevot_torol(){
     int meret = sorokat_szamol("osszetevok.txt");
     char **lista = osszetevo_lista();
@@ -83,8 +87,25 @@ void osszetevot_torol(){
     while(van_e == true){
         printf("Van még törlendő elem?");
         scanf("%s",&valasz);
+        for(int i=0;i<meret;i++){
+            printf("%d. %s \n",i+1,lista[i]);
+        }
         if(valaszt_tesztel(valasz) == 1){
-            continue;
+            printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
+            printf("Választás:");
+            scanf("%d",&valasztas);
+            if(valasztas>meret){
+                printf("Nem megfelelő számot adtál meg!");
+                printf("Választás:");
+                scanf("%d",&valasztas);
+            }
+            for(int i=0;i<meret;i++){
+                if (valasztas-1== i){
+                    continue;
+                }
+                else
+                    fputs(lista[i],fp);
+                }
         }
         else if (valaszt_tesztel(valasz) == 0) {
             van_e = false;
@@ -93,24 +114,7 @@ void osszetevot_torol(){
             printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
             van_e = true;
         }
-        printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
-        for(int i=0;i<meret;i++){
-            printf("%d. %s \n",i+1,lista[i]);
-        }
-        printf("Választás:");
-        scanf("%d",&valasztas);
-        if(valasztas>meret){
-            printf("Nem megfelelő számot adtál meg!");
-            printf("Választás:");
-            scanf("%d",&valasztas);
-        }
-        for(int i=0;i<meret;i++){
-            if (valasztas== i){
-                continue;
-            }
-            else
-                fputs(lista[i],fp);
-        }
+
     }
         fclose(fp);
         osszetevot_felszabadit(lista,meret);
