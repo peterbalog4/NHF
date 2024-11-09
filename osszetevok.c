@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "uf.h"
+#include "debugmalloc.h"
 
 // A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
 void uj_osszetevo(void){

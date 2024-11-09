@@ -1,11 +1,13 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-
 //Megjegyzések: Ez az univerzális függvénykönyvtáram. Olyan kicsi függvények amiket a NHF szinte összes moduljában használok, ezért összegyûjtöttem egy helyre.
 
 // Ez a függvény sorokat számol. Az összetevőket és a recepteket tartozó fájlok sorszámolására használom.
 // Az uj_osszetevo fuggveny es az uj_recept fuggveny minden sor végére rak egy \n karaktert így pontosan számol a függvény.
+
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include "debugmalloc.h"
+
  int sorokat_szamol(char *fajl){
     FILE *fp;
     fp = fopen(fajl,"r");
@@ -47,19 +49,17 @@ char **ures_lista(int meret, int charsize){
     lista = malloc(meret*sizeof(char *));
     if (lista == NULL){
         printf("Memóriafoglalási hiba!");
+        system("exit");
         return NULL;
     }
     for(int i=0;i<meret;i++){
         lista[i] = malloc(charsize * sizeof(char));
         if (lista[i] == NULL){
             printf("Memóriafoglalási hiba!");
+            system("exit");
             return NULL;
         }
     }
-    for(int i=0;i<meret;i++){
-        lista[i] = "0";
-    }
-
 return lista;
 }
 
@@ -74,6 +74,6 @@ void listat_kiir(char **lista, int meret){
 // Kiírja egy lista összes elemét egy fájlba.
 void listat_fajlba_ir(char **lista, int meret ,FILE *fp){
     for(int i=0; i<meret;i++){
-        fprintf(fp, "%s \n",lista[i]);
+        fprintf(fp," %s ",lista[i]);
     }
 }

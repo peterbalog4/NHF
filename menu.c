@@ -1,16 +1,22 @@
+// NTS: Meg kell oldani, hogy ki lehessen lépni az exit szóval. + a program csak akkor álljon le ha a főmenüben exitet kap.
+
+// Megjegyzés: 1. A program egyelőre nem ciklikus. Azaz mindig leáll. Ez a kész NHF-ban már javítva lesz és csak akkor áll majd le a program, ha exit kulcszót kap.
+// 2. Az elmentett uj osszetevők csak a program bezárásakor kerülnek bele a fájlba. Emiatt ha a 2.1 meüben új összetevőt adunk meg, az nem lesz használható. Ezt úgy tervezem javítani, hogy nem a fájlba fog írogatni az uj_osszetevo
+// függvény, hanem egy a fájlból átvett listába. Ezt idő hiányában nem tudom határidőre kivitelezni, ezért csak a kész NHF-ba fog bekerülni.
+
 #include <stdio.h>
 #include <stdbool.h>
 #include "osszetevok.h"
 #include "uf.h"
 #include "recept.h"
-// NTS: Meg kell oldani, hogy ki lehessen lépni az exit szóval. + a program csak akkor álljon le ha a főmenüben exitet kap.
+#include "debugmalloc.h"
 
 void almenu_osszetevo(void);
 void almenu_uj(void);
 void almenu_recept(void);
 void almenu_keres(void);
 
-// A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér vissza.
+// A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér majd vissza.
 void fomenu(void){
     int valasztas;
     printf("NHF | Koktéloskönyv\n");
@@ -43,18 +49,19 @@ void almenu_osszetevo(){
     switch(valasztas){
         case 1:{
             uj_osszetevo();
-            fomenu();
+            //fomenu();
             break;
         }
         case 2:{
             osszetevot_torol();
-            fomenu();
+            //fomenu();
             break;
         }
         case 3: {
             char **lista;
             lista = osszetevo_lista();
             listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
+            osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
             almenu_osszetevo();
             break;
         }
@@ -78,12 +85,13 @@ void almenu_uj(){
         }
         case 2:{
             uj_recept();
-            fomenu();
+            //fomenu();
             break;
         }
         case 3:{
             char **lista = osszetevo_lista();
             listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
+            osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
             almenu_uj();
             break;
         }
