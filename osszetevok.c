@@ -39,7 +39,6 @@ void uj_osszetevo(void){
     }while(van_e);
 }
 
-// A függvény jelenleg működik és használva van, de lehet, hogy a végleges feladatban el lesz hagyva vagy minimálisan lesz használva.
 // Az osszetevo_lista függvény az "osszetevok.txt" fájlban levő adatokat sztringek listájává alakítja.
 char **osszetevo_lista(){
     FILE *fp;
@@ -69,11 +68,13 @@ char **osszetevo_lista(){
 }
 
 // Felszabadítja az osszetevo_lista által létrehozott listát.
-void osszetevot_felszabadit(char **osszetevok, int meret){
-    for(int i=0;i<meret;i++){
-        free(osszetevok[i]);
+void osszetevot_felszabadit(char **osszetevok, int meret) {
+    if (osszetevok != NULL) {
+        for (int i = 0; i < meret; i++) {
+            free(osszetevok[i]);
+        }
+        free(osszetevok);
     }
-    free(osszetevok);
 }
 
 // A függvény kilistázza az ismert összetevőket és a felhasználó az index megadásával tud belőle törölni

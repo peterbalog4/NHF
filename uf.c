@@ -49,18 +49,18 @@ char **ures_lista(int meret, int charsize){
     lista = malloc(meret*sizeof(char *));
     if (lista == NULL){
         printf("Memóriafoglalási hiba!");
-        system("exit");
+        exit(1);
         return NULL;
     }
     for(int i=0;i<meret;i++){
         lista[i] = malloc(charsize * sizeof(char));
         if (lista[i] == NULL){
             printf("Memóriafoglalási hiba!");
-            system("exit");
+            exit(2);
             return NULL;
         }
     }
-return lista;
+    return lista;
 }
 
 // Kiírja egy lista összes elemét.
