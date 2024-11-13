@@ -1,4 +1,5 @@
 // NTS: Meg kell oldani, hogy ki lehessen lépni az exit szóval. + a program csak akkor álljon le ha a főmenüben exitet kap.
+// NTS: Láncolt lista az összetevőkhöz!!!
 
 // Megjegyzés: 1. A program egyelőre nem ciklikus. Azaz mindig leáll. Ez a kész NHF-ban már javítva lesz és csak akkor áll majd le a program, ha exit kulcszót kap.
 // 2. Az elmentett uj osszetevők csak a program bezárásakor kerülnek bele a fájlba. Emiatt ha a 2.1 meüben új összetevőt adunk meg, az nem lesz használható. Ezt úgy tervezem javítani, hogy nem a fájlba fog írogatni az uj_osszetevo
@@ -43,13 +44,30 @@ void fomenu(void){
 
 // Ebből az almenüből érhetőek el az összetevő függvények.
 void almenu_osszetevo(){
+    FILE *fp;
+    char **lista;
+    lista = osszetevo_lista();
     int valasztas;
+    char valasz;
+    int meret = sorokat_szamol("osszetevok.txt");
     printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-            uj_osszetevo();
-            //fomenu();
+            uj_osszetevo(lista,meret);
+            printf("Szeretnél még valamit csinálni?");
+            scanf("%s", &valasz);
+            if(valaszt_tesztel(valasz) == 1){
+                almenu_osszetevo();
+            }
+            eles if{valaszt_tesztel(valasz) == 0){
+                fp = fopen("osszetevok.txt","w");
+                for(int i=0;i<meret;i++){
+                    fprintf(fp,"%s",lista[i]);
+                    fprintf("\n");
+                }
+
+            }
             break;
         }
         case 2:{
@@ -58,8 +76,6 @@ void almenu_osszetevo(){
             break;
         }
         case 3: {
-            char **lista;
-            lista = osszetevo_lista();
             listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
             osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
             almenu_osszetevo();

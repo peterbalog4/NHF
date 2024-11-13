@@ -13,7 +13,8 @@
 
 int main(void){
     system("chcp 65001 >nul");
-    fomenu();
+    //fomenu();
     return 0;
-
+    ListaElem * eleje = L_listat_letrehoz();
+    lancolt_listat_kiir(eleje);
 }

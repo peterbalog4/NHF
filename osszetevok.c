@@ -14,11 +14,9 @@
 #include "debugmalloc.h"
 
 // A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
-void uj_osszetevo(void){
+int uj_osszetevo(char **lista,int meret){
     bool van_e;
     do{
-        FILE *fp;
-        fp = fopen("osszetevok.txt", "a");
         char valasz[5];
         char ujosszetevo[52];
         printf("Van még új összetevő?");
@@ -26,14 +24,15 @@ void uj_osszetevo(void){
         if(valaszt_tesztel(valasz)  == 1){
             printf("Add meg az új összetevőt:");
             scanf("%s",&ujosszetevo);
+            listat_bovit(lista,meret+1,ujosszetevo);
+            meret++;
             van_e = true;
-            fprintf(fp,"%s\n",ujosszetevo);
         }else if(valaszt_tesztel(valasz) == 0) {
-            fclose(fp);
             van_e = false;
+            return meret;
         }
         else{
-            printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
+            printf("\nIsmeretlen választás kérlek az igen/nem szavakat vagy I/H betut adj meg\n");
             van_e = true;
         }
     }while(van_e);
