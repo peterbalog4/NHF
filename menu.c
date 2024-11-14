@@ -114,7 +114,7 @@ void almenu_uj(char **lista,int meret){
             break;
         }
         case 2:{
-            Recept *eleje = NULL;
+        Recept *eleje = NULL;
         Recept *uj = uj_recept(eleje);
 
         if (uj != NULL) {
