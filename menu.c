@@ -12,6 +12,11 @@
 #include "recept.h"
 #include "debugmalloc.h"
 
+/*typdef struct List{
+    char ** osszetevok;
+    int meret;
+} List;*/
+
 void almenu_osszetevo(char **lista,int meret);
 void almenu_uj(char **lista,int meret);
 void almenu_recept(void);
@@ -23,7 +28,7 @@ void fomenu(void){
     int meret = sorokat_szamol("osszetevok.txt");
     int valasztas;
     printf("NHF | Koktéloskönyv\n");
-    printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n Választás:");
+    printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n 5. Kilépés.... \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
@@ -38,6 +43,8 @@ void fomenu(void){
         case 4:
             almenu_keres();
             break;*/
+        case 5:
+            return;
         default:
             fomenu();
             break;
@@ -49,21 +56,20 @@ void almenu_osszetevo(char **lista,int meret){
     FILE *fp;
     int valasztas;
     char valasz[5];
-    printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n Választás:");
+    printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n 4. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-            lista = uj_osszetevo(lista,meret);
-            listat_kiir(lista,meret+2);
+            char **ujlista = uj_osszetevo(lista,meret);
             printf("Szeretnél még valamit csinálni?");
             scanf("%s", &valasz);
             if(valaszt_tesztel(valasz) == 1){
-                void almenu_osszetevo(lista,meret);
+                almenu_osszetevo(lista,meret);
             }
             else if(valaszt_tesztel(valasz) == 0){
                 fp = fopen("osszetevok.txt","w");
                 for(int i=0;i<meret;i++){
-                    fprintf(fp,"%s",lista[i]);
+                    fprintf(fp,"%s",ujlista[i]);
                     fprintf(fp, "\n");
                 }
 
@@ -81,6 +87,8 @@ void almenu_osszetevo(char **lista,int meret){
             almenu_osszetevo(lista,meret);
             break;
         }
+        case 4:
+            fomenu();
         default:
             almenu_osszetevo(lista,meret);
             break;
@@ -93,7 +101,7 @@ void almenu_uj(char **lista,int meret){
     int valasztas;
     char valasz[5];
     printf(" Van e új összetevő?");
-    printf("\n 1. Van \n 2. Nincs \n 3. Nem tudom\n Választás:");
+    printf("\n 1. Van \n 2. Nincs \n 3. Nem tudom\n 4. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
@@ -101,7 +109,7 @@ void almenu_uj(char **lista,int meret){
             printf("Szeretnél még valamit csinálni?");
             scanf("%s", &valasz);
             if(valaszt_tesztel(valasz) == 1){
-                void almenu_uj(lista,meret);
+                almenu_uj(lista,meret);
             }
             else if(valaszt_tesztel(valasz) == 0){
                 fp = fopen("osszetevok.txt","w");
@@ -114,8 +122,9 @@ void almenu_uj(char **lista,int meret){
             break;
         }
         case 2:{
-        Recept *eleje = NULL;
-        Recept *uj = uj_recept(eleje);
+            Recept *eleje = NULL;
+            Recept *uj = uj_recept(eleje);
+            almenu_uj(lista,meret);
 
         if (uj != NULL) {
             printf("Recept hozzáadva: %s\n", uj->nev);
@@ -129,6 +138,8 @@ void almenu_uj(char **lista,int meret){
             almenu_uj(lista,&meret);
             break;
         }
+        case 4:
+            fomenu();
         default:
             almenu_uj(lista,&meret);
             break;

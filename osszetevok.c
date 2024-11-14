@@ -4,6 +4,7 @@
 // 2. A segédfüggvények az uf.c fájlban vannak.
 // 3. Az összetevő fuggvenyek(uj_osszetevo,osszetevo_lista,osszetevot_torol) jelenleg jól működnek. Viszont vannak dolgok benne amin szeretnék változtatni. Például amit laboron beszéltünk, a sok
 // felesleges fájlnyitogatás. A végleges verzióban a modul és a kód funkcionalitása nem fog változni, de bizonyos dolgokat szeretnék "okosabban" megoldani.
+//structot csinálni!!!!!
 
 // NTS: Fájlkezelést javítani!!! || Fájlt az elején beolvassa, végén fájlba ír.
 
@@ -12,6 +13,7 @@
 #include <string.h>
 #include "uf.h"
 #include "debugmalloc.h"
+
 
 // A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
 char **uj_osszetevo(char **lista,int meret){
@@ -24,7 +26,7 @@ char **uj_osszetevo(char **lista,int meret){
         if(valaszt_tesztel(valasz)  == 1){
             printf("Add meg az új összetevőt:");
             scanf("%s",&ujosszetevo);
-            listat_bovit(lista,meret+1,ujosszetevo);
+            lista = listat_bovit(lista,meret+1,ujosszetevo);
             meret++;
             van_e = true;
         }else if(valaszt_tesztel(valasz) == 0) {

@@ -1,0 +1,38 @@
+// Online C compiler to run C program online
+#include <stdio.h>
+typedef struct Osszetevo{
+    char * nev;
+    int ammount; //ml
+} Osszetevo;
+
+typedef struct Recept{
+    char * nev;
+    Osszetevo **data;
+    int meret;
+} Recept;
+
+typedef struct List_Of_Recipts{
+    Recept *data;
+    int meret;
+} List_Of_Recipts;
+
+void addOsszetevo(Recept *p, char*osszetevo, int ammount){
+    p->meret++;
+    int **newdata = (Osszetevo **)malloc(p->meret * sizeof(Osszetevo*));
+    
+    for(int i = 0; i< p->meret-1; i++)
+        newdata = p->data[i];
+    newdata[p->meret]->nev = osszetevo;
+    newdata[p->meret]->ammount = ammount;
+    
+    free(p->data);
+    p->data = newdata;
+}
+
+int main() {
+    char fruits[3][10] = {"alma", "korte", "barack"};
+
+
+
+    return 0;
+}

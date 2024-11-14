@@ -4,6 +4,12 @@
 #include "uf.h"
 #include "debugmalloc.h"
 
+
+typedef struct osszetevo{
+    char nev[52];
+    int ml;
+} osszetevo;
+
 typedef struct Recept{
     char nev[51];
     char **o_lista;
@@ -41,7 +47,7 @@ Recept *uj_recept(Recept *eleje){
         for(int i=0;i < o_meret;i++){
             printf("Választás:");
             scanf("%d",&valasz);
-            o_lista[i] = lista[valasz-1];
+            strcpy(o_lista[i],lista[valasz-1]);
         }
     }
     else{

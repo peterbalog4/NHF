@@ -82,10 +82,10 @@ char **listat_bovit(char **lista,int ujmeret,char *adat){
     char **ujlista;
     ujlista = malloc(ujmeret*sizeof(char));
     for(int i=0;i<ujmeret;i++){
-        ujlista[i] = lista[i];
+        strcpy(ujlista[i],lista[i]);
     }
     free(lista);
-    ujlista[ujmeret] = adat;
+    strcpy(ujlista[ujmeret],adat);
     return ujlista;
 
 }
