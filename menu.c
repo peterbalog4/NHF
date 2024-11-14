@@ -12,25 +12,25 @@
 #include "recept.h"
 #include "debugmalloc.h"
 
-void almenu_osszetevo(char **lista,int *meret);
-void almenu_uj(char **lista,int *meret);
+void almenu_osszetevo(char **lista,int meret);
+void almenu_uj(char **lista,int meret);
 void almenu_recept(void);
 void almenu_keres(void);
 
 // A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér majd vissza.
 void fomenu(void){
     char **lista = osszetevo_lista();
-    int *meret = sorokat_szamol("osszetevok.txt");
+    int meret = sorokat_szamol("osszetevok.txt");
     int valasztas;
     printf("NHF | Koktéloskönyv\n");
     printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
-            almenu_osszetevo(lista,&meret);
+            almenu_osszetevo(lista,meret);
             break;
         case 2:
-            almenu_uj(lista,&meret);
+            almenu_uj(lista,meret);
             break;
         /* case 3:
             almenu_recept();
@@ -45,16 +45,16 @@ void fomenu(void){
 }
 
 // Ebből az almenüből érhetőek el az összetevő függvények.
-void almenu_osszetevo(char **lista,int *meret){
+void almenu_osszetevo(char **lista,int meret){
     FILE *fp;
-    lista = osszetevo_lista();
     int valasztas;
     char valasz[5];
     printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-            uj_osszetevo(lista,&meret);
+            lista = uj_osszetevo(lista,meret);
+            listat_kiir(lista,meret+2);
             printf("Szeretnél még valamit csinálni?");
             scanf("%s", &valasz);
             if(valaszt_tesztel(valasz) == 1){
@@ -78,17 +78,17 @@ void almenu_osszetevo(char **lista,int *meret){
         case 3: {
             listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
             osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
-            almenu_osszetevo(lista,&meret);
+            almenu_osszetevo(lista,meret);
             break;
         }
         default:
-            almenu_osszetevo(lista,&meret);
+            almenu_osszetevo(lista,meret);
             break;
     }
 }
 
 // Ebből a függvényből érhetőek el az új receptet létrehozó és összetevőket kezelő függvények.
-void almenu_uj(char **lista,int *meret){
+void almenu_uj(char **lista,int meret){
     FILE *fp;
     int valasztas;
     char valasz[5];
@@ -97,7 +97,7 @@ void almenu_uj(char **lista,int *meret){
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-            lista = uj_osszetevo(lista,&meret);
+            lista = uj_osszetevo(lista,meret);
             printf("Szeretnél még valamit csinálni?");
             scanf("%s", &valasz);
             if(valaszt_tesztel(valasz) == 1){

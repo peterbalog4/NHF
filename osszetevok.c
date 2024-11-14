@@ -14,7 +14,7 @@
 #include "debugmalloc.h"
 
 // A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
-char **uj_osszetevo(char **lista,int *meret){
+char **uj_osszetevo(char **lista,int meret){
     bool van_e;
     do{
         char valasz[5];
@@ -25,7 +25,7 @@ char **uj_osszetevo(char **lista,int *meret){
             printf("Add meg az új összetevőt:");
             scanf("%s",&ujosszetevo);
             listat_bovit(lista,meret+1,ujosszetevo);
-            *meret++;
+            meret++;
             van_e = true;
         }else if(valaszt_tesztel(valasz) == 0) {
             van_e = false;
