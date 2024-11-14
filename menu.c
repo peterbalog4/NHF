@@ -114,8 +114,12 @@ void almenu_uj(char **lista,int meret){
             break;
         }
         case 2:{
-            uj_recept();
-            //fomenu();
+            Recept *eleje = NULL;
+        Recept *uj = uj_recept(eleje);
+
+        if (uj != NULL) {
+            printf("Recept hozzáadva: %s\n", uj->nev);
+        }
             break;
         }
         case 3:{
