@@ -1,6 +1,6 @@
 #ifndef RECEPT_H_INCLUDED
 #define RECEPT_H_INCLUDED
 
-void uj_recept();
+Recept *uj_recept(Recept *eleje)
 
 #endif // RECEPT_H_INCLUDED
