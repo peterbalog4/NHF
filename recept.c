@@ -129,6 +129,37 @@ void receptet_kiir(Recept *recept){
     }
 }
 
+void receptet_fajlba_ir(Recept **eleje){
+    FILE *fp;
+    Recept *utolso = *eleje;
+    fp = fopen("receptek.txt","w");
+    if(utolso != NULL){
+        do{
+            fprintf(fp," %s\n", utolso->nev);
+            fprintf(fp,"stop \n");
+            for(int i=0;i<utolso->o_meret;i++){
+                fprintf(fp,"%s %d \n",utolso->o_lista[i],*utolso->ml[i]);
+            }
+            fprintf(fp,"stop\n");
+            for(int i=0;i<utolso->el_meret;i++){
+                fprintf(fp,"%s \n",utolso->el_lista[i]);
+            }
+            utolso = utolso->kov;
+        }while(utolso->kov != NULL);
+    }
+    fprintf(fp," %s\n", utolso->o_meret);
+    fprintf(fp," %s\n", utolso->el_meret);
+    fprintf(fp," %s\n", utolso->nev);
+    for(int i=0;i<utolso->o_meret;i++){
+        fprintf(fp,"%s %d \n",utolso->o_lista[i],*utolso->ml[i]);
+    }
+    fprintf(fp,"stop\n");
+    for(int i=0;i<utolso->el_meret;i++){
+        fprintf(fp,"%s \n",utolso->el_lista[i]);
+    }
+    fprintf(fp,"stop\n");
+}
+
 // Felszabadítja a recepteket tároló láncolt listát. Megjegyzés: Feltűnő lehet, hogy az NHF-ben magyar kifejezéseket használok, itt
 // pedig a temp angol kifejezést. A kódot nem plagizáltam, csupán a magyar "időleges" vagy "eseti" nagyon furán használható/értelmezhető.
 void receptet_felszabadit(Recept **eleje){
@@ -149,31 +180,86 @@ void receptet_felszabadit(Recept **eleje){
 
     }
 }
-int main(){
-    system("chcp 65001 >nul");
-    Recept *eleje = NULL;
-    char valasz[5];
-    bool van_e = true;
-    while(van_e == true){
-        printf("Szeretnél még új receptet hozzáadni?");
-        scanf("%s",valasz);
-        if (valaszt_tesztel(valasz) == 1){
-            uj_recept(&eleje);
+
+void recept_lista(Recept **eleje){
+
+    FILE *fp;
+
+    int k=0,j=0;
+
+    Recept *uj = (Recept*)malloc(sizeof(Recept));
+
+    Recept *utolso = *eleje;
+    fp = fopen("receptek.txt","r");
+    while(fscanf(fp,"%d",uj->o_meret) != EOF){
+        fscanf(fp,"%d",uj->el_meret);
+        uj->o_lista = malloc(uj->o_meret*sizeof(char *));
+        if (uj->o_lista == NULL){
+            printf("Memóriafoglalási hiba!");
+            exit(1);
         }
-        else if (valaszt_tesztel(valasz) == 0) {
-            van_e = false;
+        for(int i=0;i<uj->o_meret;i++){
+            uj->o_lista[i] = malloc(52 * sizeof(char));
+            if (uj->o_lista[i] == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(2);
+            }
+        }
+
+        uj->ml = malloc(uj->o_meret*sizeof(int *));
+        if (uj->ml == NULL){
+            printf("Memóriafoglalási hiba!");
+            exit(7);
+        }
+        for(int i=0;i<uj->o_meret;i++){
+            uj->ml[i] = malloc(sizeof(int));
+            if (uj->ml[i] == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(8);
+            }
+        }
+
+        uj->el_lista = malloc(uj->el_meret*sizeof(char *));
+        if (uj->el_lista == NULL){
+            printf("Memóriafoglalási hiba!");
+            exit(4);
+        }
+        for(int i=0;i<uj->el_meret;i++){
+            uj->el_lista[i] = malloc(201 * sizeof(char));
+            if (uj->el_lista[i] == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(5);
+            }
+        }
+
+        fscanf(fp,"%s",uj->nev);
+        while(strcmp(scanf("%s",uj->o_lista[k]),"stop") != 0){
+            fscanf("%d",uj->ml[k++]);
+        }
+        while(strcmp(scanf("%s",uj->el_lista[j++]),"stop") != 0){
+            continue;
+        }
+
+        if(utolso != NULL){
+            while(utolso->kov != NULL){
+                utolso = utolso->kov;
+            }
+        }
+
+        if (*eleje == NULL){
+            *eleje = uj;
+            uj->kov = NULL;
+            return;
         }
         else{
-            printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
-            van_e = true;
+            Recept *utolso = *eleje;
+            while(utolso->kov != NULL){
+                utolso = utolso->kov;
+            }
+            utolso->kov = uj;
+            uj->kov = NULL;
+            return;
         }
     }
-    Recept *utolso = eleje;
-    while(utolso->kov != NULL){
-          receptet_kiir(utolso);
-          utolso = utolso->kov;
-    }
-    receptet_kiir(utolso);
-    receptet_felszabadit(&eleje);
-    return 0;
+    fclose(fp);
 }

@@ -5,5 +5,6 @@ typedef struct Recept{char nev[51];char **o_lista;int o_meret;int **ml;char **el
 void uj_recept(Recept **eleje);
 void receptet_kiir(Recept *recept);
 void receptet_felszabadit(Recept **eleje);
+void recept_lista(Recept **eleje);
 
 #endif // RECEPT_H_INCLUDED
