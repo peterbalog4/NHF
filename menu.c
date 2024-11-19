@@ -35,10 +35,10 @@ void fomenu(void){
         case 2:
             almenu_uj();
             break;
-        /* case 3:
+        case 3:
             almenu_recept();
             break;
-        case 4:
+        /*case 4:
             almenu_keres();
             break;*/
         case 5:
@@ -145,21 +145,22 @@ void almenu_recept(){
     recept_lista(&eleje);
     int valasztas;
     int valasz;
-    int receptek_szama = receptek_szamolo(&eleje);
+    int receptek_szama = recept_szamolo(&eleje);
     printf("\n1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
-            recept_modosit();
+            //recept_modosit();
             break;
         case 2:
             printf("Melyik receptet szeretnéd törölni?");
-            for(int i=0;i<receptek_szama);i++){
+            for(int i=0;i<receptek_szama;i++){
                 recept_listaz(&eleje);
             }
             scanf("%d",&valasz);
-            if(0 < valasz && valasz <= receptek_szama))
-                recept_torol(&eleje);
+            if(0 < valasz && valasz <= receptek_szama){
+                recept_torol(&eleje,valasz);
+            }
             else{
                 printf("Hibás index!");
                 fomenu();

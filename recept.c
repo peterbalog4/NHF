@@ -141,8 +141,10 @@ void receptet_kiir(Recept *recept){
 }
 
 void receptet_fajlba_ir(Recept **eleje){
-    FILE *fp;
+    FILE *fp,*fp2;
     Recept *utolso = *eleje;
+    fp2 = fopen("recept.txt","w");
+    fprintf(fp2,"%d",recept_szamolo(&eleje));
     fp = fopen("receptek.txt","w");
     if(utolso != NULL){
         do{
