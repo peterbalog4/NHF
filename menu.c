@@ -103,6 +103,7 @@ void almenu_uj(){
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
+            recept_listaz(&eleje);
             break;
         }
         case 2:{
