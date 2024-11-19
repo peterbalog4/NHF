@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "debugmalloc.h"
+#include "recept.h"
 
  int sorokat_szamol(char *fajl){
     FILE *fp;

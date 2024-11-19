@@ -6,5 +6,7 @@ void uj_recept(Recept **eleje);
 void receptet_kiir(Recept *recept);
 void receptet_felszabadit(Recept **eleje);
 void recept_lista(Recept **eleje);
-
+int recept_szamolo(Recept **eleje);
+void recept_listaz(Recept **eleje);
+void recept_torol(Recept **eleje,int mennyi);
 #endif // RECEPT_H_INCLUDED

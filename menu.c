@@ -103,11 +103,7 @@ void almenu_uj(){
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-             Recept *utolso = eleje;
-             do{
-                receptet_kiir(utolso);
-                utolso = utolso->kov;
-            }while(utolso->kov != NULL);
+            break;
         }
         case 2:{
             char valasz[5];
@@ -126,39 +122,54 @@ void almenu_uj(){
                     van_e = true;
                 }
             }
-            Recept *utolso = eleje;
-            receptet_fajlba_ir(&eleje);
-            receptet_felszabadit(&eleje);
             break;
         }
         case 3:{
             char **lista = osszetevo_lista();
             listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
             osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
-            almenu_uj();
             break;
         }
         case 4:
             fomenu();
         default:
-            almenu_uj();
             break;
     }
+    receptet_fajlba_ir(&eleje);
+    receptet_felszabadit(&eleje);
+    return 0;
 }
 // Innen lesznek elérhetőek a recept kezelő függvények. Megjegyzés: Még fejlesztés alatt.
- /* void almenu_recept(){
+void almenu_recept(){
+    Recept *eleje = NULL;
+    recept_lista(&eleje);
     int valasztas;
-    printf("\n1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n Választás:");
+    int valasz;
+    int receptek_szama = receptek_szamolo(&eleje);
+    printf("\n1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
             recept_modosit();
             break;
         case 2:
-            recept_torol();
+            printf("Melyik receptet szeretnéd törölni?");
+            for(int i=0;i<receptek_szama);i++){
+                recept_listaz(&eleje);
+            }
+            scanf("%d",&valasz);
+            if(0 < valasz && valasz <= receptek_szama))
+                recept_torol(&eleje);
+            else{
+                printf("Hibás index!");
+                fomenu();
+            }
             break;
         case 3:
-            recept_listaz();
+            recept_listaz(&eleje);
+            break;
+        case 4:
+            fomenu();
             break;
         default:
             almenu_recept();
@@ -166,7 +177,7 @@ void almenu_uj(){
     }
 }
 // Innen lesznek elérhetőek a kereső függvények. Megjegyzés: Még fejlesuztés alatt.
-void almenu_keres(){
+/*void almenu_keres(){
     int valasztas;
     printf("\n1.Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
     scanf("%d", &valasztas);
@@ -184,5 +195,5 @@ void almenu_keres(){
             almenu_keres();
             break;
     }
-}
-*/
+}*/
+

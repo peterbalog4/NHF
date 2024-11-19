@@ -1,23 +1,19 @@
+1
+2
+gin
+ 1263225675
+sor
+12
+1
+2
+szavak
+ 1263225675
+szok
+1
 2
 2
 gin
-sor
- 2 
-sor
- 2 
-stop
-1 
-2
-stop
-2
-3
-nem 
-rum
- 2 
-sor
- 2 
-stop
-1 
-2 
-3 
-stop
+ 1263225675
+sor 12
+
+szavak

@@ -115,12 +115,23 @@ void uj_recept(Recept **eleje){
         return;
     }
 }
+
+int recept_szamolo(Recept **eleje){
+    int recept_szamolo = 0;
+    Recept *utolso = *eleje;
+    while(utolso->kov != NULL){
+        recept_szamolo++;
+        utolso = utolso->kov;
+    }
+    return recept_szamolo;
+}
+
 void receptet_kiir(Recept *recept){
     if (recept != NULL) {
         printf("Név: %s\n", recept->nev);
         printf("Összetevők: \n");
         for(int i=0;i<recept->o_meret;i++){
-            printf("%s %d ml \n",recept->o_lista[i],*recept->ml[i]);
+            printf("%s %d ml \n",recept->o_lista[i],*(recept->ml[i]));
         }
         printf("Elkészítési leírás: \n");
         for(int i=0;i<recept->el_meret;i++){
@@ -139,10 +150,10 @@ void receptet_fajlba_ir(Recept **eleje){
             fprintf(fp,"%d\n", utolso->el_meret);
             fprintf(fp,"%s\n", utolso->nev);
             for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s %d \n",utolso->o_lista[i],*utolso->ml[i]);
+                fprintf(fp,"%s %d\n",utolso->o_lista[i],*(utolso->ml[i]));
             }
             for(int i=0;i<utolso->el_meret;i++){
-                fprintf(fp,"%s \n",utolso->el_lista[i]);
+                fprintf(fp,"%s\n",utolso->el_lista[i]);
             }
             utolso = utolso->kov;
         }while(utolso->kov != NULL);
@@ -170,21 +181,18 @@ void receptet_felszabadit(Recept **eleje){
     }
 }
 
-void recept_lista(Recept **eleje){
+int recept_lista(Recept **eleje){
 
-    FILE *fp;
+    FILE *fp,*fp2;
 
+    fp2 = fopen("recept.txt","r");
 
-    int k=0,j=0;
-
-    int o_meret,el_meret;
-
-    Recept *uj = (Recept*)malloc(sizeof(Recept));
-
+    int o_meret,el_meret,recept_szamolo,szamolo=0;
     fp = fopen("receptek.txt","r");
-
-    //while(fscanf(fp,"%d",&o_meret) == 1){
-         fscanf(fp,"%d",&o_meret);
+    fscanf(fp2,"%d",&recept_szamolo);
+    while(recept_szamolo != szamolo){
+        fscanf(fp,"%d",&o_meret);
+        Recept *uj = (Recept*)malloc(sizeof(Recept));
         fscanf(fp,"%d",&el_meret);
         uj->o_lista = malloc(o_meret*sizeof(char *));
         if (uj->o_lista == NULL){
@@ -225,34 +233,21 @@ void recept_lista(Recept **eleje){
         }
 
         fscanf(fp,"%s",uj->nev);
-        int o_szamolo =0,el_szamolo=0;
-        while (o_szamolo < o_meret) {
-            // Összetevők neveinek beolvasása
-            fgets(uj->o_lista[k], 52, fp);
 
-            // Eltávolítjuk a sor végéről a '\n' karaktert, ha van
-            uj->o_lista[k][strcspn(uj->o_lista[k], "\n")] = '\0';
-
-            // Mennyiség beolvasása
-            fscanf(fp, "%d", uj->ml[k]);
-
-            o_szamolo++;
-            k++;
+        for(int i=0;i<o_meret;i++) {
+            fgets(uj->o_lista[i], 52, fp);
+            uj->o_lista[i][strcspn(uj->o_lista[i], "\n")] = '\0';
+            fscanf(fp, "%d", uj->ml[i]);
         }
 
-        while (el_szamolo < el_meret) {
-            // Elkészítési lépések beolvasása
-            fgets(uj->el_lista[j], 201, fp);
-
-            // Eltávolítjuk a sor végéről a '\n' karaktert, ha van
-            uj->el_lista[j][strcspn(uj->el_lista[j], "\n")] = '\0';
-
-            el_szamolo++;
-            j++;
+        for(int i=0;i<el_meret;i++) {
+            fgets(uj->el_lista[i], 201, fp);
+             uj->el_lista[i][strcspn(uj->el_lista[i], "\n")] = '\0';
         }
 
         uj->o_meret = o_meret;
         uj->el_meret = el_meret;
+
         Recept *utolso = *eleje;
 
         if (*eleje == NULL) {
@@ -265,60 +260,39 @@ void recept_lista(Recept **eleje){
             }
             utolso->kov = uj;
             uj->kov = NULL;
+        szamolo++;
         }
+    }
     fclose(fp);
 }
 
-int main(){
-    system("chcp 65001 >nul");
-    Recept *eleje = NULL;
-    recept_lista(&eleje);
-    int valasztas;
-    printf(" Van e új összetevő?");
-    printf("\n 1. Van \n 2. Nincs \n 3. Nem tudom\n 4. Visszalépés \n Választás:");
-    scanf("%d", &valasztas);
-    switch(valasztas){
-        case 1:{
-             Recept *utolso = eleje;
-             do{
-                receptet_kiir(utolso);
-                utolso = utolso->kov;
-            }while(utolso != NULL);
-            break;
-        }
-        case 2:{
-            char valasz[5];
-            bool van_e = true;
-            while(van_e == true){
-                printf("Szeretnél még új receptet hozzáadni?");
-                scanf("%s",valasz);
-                if (valaszt_tesztel(valasz) == 1){
-                    uj_recept(&eleje);
-                }
-                else if (valaszt_tesztel(valasz) == 0) {
-                    van_e = false;
-                }
-                else{
-                    printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
-                    van_e = true;
-                }
-            }
-            Recept *utolso = eleje;
-            receptet_fajlba_ir(&eleje);
-            receptet_felszabadit(&eleje);
-            break;
-        }
-        case 3:{
-            char **lista = osszetevo_lista();
-            listat_kiir(lista, sorokat_szamol("osszetevok.txt"));
-            osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
-            break;
-        }
-        case 4:
-            break;
-        default:
-            break;
+void recept_listaz(Recept **eleje){
+    Recept *utolso = eleje;
+    int szamolo=1;
+    do{
+        printf("%d.",szamolo);
+        receptet_kiir(utolso);
+        utolso = utolso->kov;
+        szamolo++;
+    }while(utolso->kov != NULL);
+}
+
+void recept_torol(Recept **eleje,int mennyi){
+    Recept *elozo,*temp = NULL;
+    temp = *eleje;
+    int szamolo=0;
+    if(mennyi == 1){
+        *eleje = temp->kov;
+        free(temp);
+        return;
     }
-    receptet_felszabadit(&eleje);
-    return 0;
+    else{
+        while(szamolo != mennyi-1){
+            temp->kov;
+            szamolo++;
+        }
+        elozo = temp;
+        elozo->kov = temp->kov;
+        free(temp);
+    }
 }
