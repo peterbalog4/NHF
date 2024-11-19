@@ -183,7 +183,7 @@ void receptet_felszabadit(Recept **eleje){
     }
 }
 
-int recept_lista(Recept **eleje){
+void recept_lista(Recept **eleje){
 
     FILE *fp,*fp2;
 
