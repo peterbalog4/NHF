@@ -91,60 +91,6 @@ char **listat_bovit(char **lista,int ujmeret,char *adat){
 
 }
 
-/*typedef struct ListaElem {
-    char adat[52];
-    struct ListaElem *kov;
-} ListaElem;
-
- void lista_elejehez_beszur(ListaElem *eleje, char sztring[52]){
-    ListaElem *uj;
-    uj =  (ListaElem*) malloc(sizeof(ListaElem));
-    uj->adat = sztring;
-    if(eleje == NULL){
-        eleje = uj;
-    }
-    else{
-        uj->kov = eleje;
-        eleje = uj;
-    }
+void uj_sort_torol(char *string) {
+    string[strcspn(string, "\n")] = '\0';
 }
-
-void lista_vegehez_hozzafuz(ListaElem *eleje, char *sztring){
-    ListaElem *uj;
-    uj =  (ListaElem*) malloc(sizeof(ListaElem));
-    uj->adat = sztring;
-    ListaElem *mozgo = eleje;
-    if (eleje == NULL) {
-        eleje = uj;
-    }
-    else{
-        while (mozgo->kov != NULL){
-            mozgo = mozgo->kov;
-        }
-        mozgo->kov = uj;
-        uj->kov = NULL;
-    }
-}
-
-// Forrás: A 10. heti laborról átvéve. Némileg átalakítva, hogy sztringek legyenek benne.
-ListaElem *L_listat_letrehoz(void) {
-    char **lista = osszetevo_lista();
-    ListaElem *lis = NULL;
-
-    for (int i = 0; i<sorokat_szamol("osszetevok.txt"); ++i) {
-        ListaElem *u;
-        u = (ListaElem*) malloc(sizeof(ListaElem));
-        u->kov = lis;
-        u->adat = lista[i];
-        lis = u;
-    }
-    return lis;
-}
-
-void lancolt_listat_kiir(ListaElem *eleje){
-    ListaElem *mozgo = eleje;
-    for (mozgo = eleje; mozgo != NULL; mozgo = mozgo->kov){
-        printf("%s ", mozgo->adat);
-    }
-}
-*/

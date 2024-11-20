@@ -67,7 +67,6 @@ void almenu_osszetevo(){
             else if(valaszt_tesztel(valasz) == 0){
                 fp = fopen("osszetevok.txt","w");
                 for(int i=0;i<meret;i++){
-                    //fprintf(fp,"%s",ujlista[i]);
                     fprintf(fp, "\n");
                 }
 
@@ -103,7 +102,7 @@ void almenu_uj(){
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:{
-            recept_listaz(&eleje);
+            receptet_listaz(&eleje);
             break;
         }
         case 2:{
@@ -138,6 +137,7 @@ void almenu_uj(){
     }
     receptet_fajlba_ir(&eleje);
     receptet_felszabadit(&eleje);
+
     return 0;
 }
 // Innen lesznek elérhetőek a recept kezelő függvények. Megjegyzés: Még fejlesztés alatt.
@@ -146,18 +146,16 @@ void almenu_recept(){
     recept_lista(&eleje);
     int valasztas;
     int valasz;
-    int receptek_szama = recept_szamolo(&eleje);
-    printf("\n1.Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... Választás:");
+    printf("\n 1. Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
             //recept_modosit();
             break;
         case 2:
-            printf("Melyik receptet szeretnéd törölni?");
-            for(int i=0;i<receptek_szama;i++){
-                recept_listaz(&eleje);
-            }
+            printf("Melyik receptet szeretnéd törölni?\n");
+            int receptek_szama = receptet_listaz(&eleje);
+            printf("\nVálasztás:");
             scanf("%d",&valasz);
             if(0 < valasz && valasz <= receptek_szama){
                 recept_torol(&eleje,valasz);
@@ -167,9 +165,11 @@ void almenu_recept(){
                 fomenu();
             }
             break;
-        case 3:
-            recept_listaz(&eleje);
+        case 3:{
+            int receptek_szama = receptet_listaz(&eleje);
+            printf("\nTárolt receptek száma:%d \n",receptek_szama);
             break;
+        }
         case 4:
             fomenu();
             break;
@@ -177,6 +177,8 @@ void almenu_recept(){
             almenu_recept();
             break;
     }
+    receptet_fajlba_ir(&eleje);
+    receptet_felszabadit(&eleje);
 }
 // Innen lesznek elérhetőek a kereső függvények. Megjegyzés: Még fejlesuztés alatt.
 /*void almenu_keres(){

@@ -9,7 +9,7 @@ typedef struct Recept{
     char nev[51];
     char **o_lista;
     int o_meret;
-    int **ml;
+    char **ml;
     char **el_lista;
     int el_meret;
     struct Recept *kov;
@@ -58,9 +58,10 @@ void uj_recept(Recept **eleje){
         for(int i=0;i < o_meret;i++){
             printf("Választás:");
             scanf("%d",&valasz);
+            lista[valasz-1][strcspn(lista[valasz-1], "\n")] = '\0';
             strcpy(uj->o_lista[i],lista[valasz-1]);
             printf("Hány ml-t?");
-            scanf("%d", uj->ml[i]);
+            scanf("%s", uj->ml[i]);
         }
     }
     else{
@@ -116,22 +117,12 @@ void uj_recept(Recept **eleje){
     }
 }
 
-int recept_szamolo(Recept **eleje){
-    int recept_szamolo = 0;
-    Recept *utolso = *eleje;
-    while(utolso->kov != NULL){
-        recept_szamolo++;
-        utolso = utolso->kov;
-    }
-    return recept_szamolo;
-}
-
 void receptet_kiir(Recept *recept){
     if (recept != NULL) {
         printf("Név: %s\n", recept->nev);
         printf("Összetevők: \n");
         for(int i=0;i<recept->o_meret;i++){
-            printf("%s %d ml \n",recept->o_lista[i],*(recept->ml[i]));
+            printf("%s %s ml \n",recept->o_lista[i],recept->ml[i]);
         }
         printf("Elkészítési leírás: \n");
         for(int i=0;i<recept->el_meret;i++){
@@ -141,24 +132,33 @@ void receptet_kiir(Recept *recept){
 }
 
 void receptet_fajlba_ir(Recept **eleje){
-    FILE *fp,*fp2;
+    FILE *fp;
     Recept *utolso = *eleje;
-    fp2 = fopen("recept.txt","w");
-    fprintf(fp2,"%d",recept_szamolo(&eleje));
     fp = fopen("receptek.txt","w");
     if(utolso != NULL){
         do{
-            fprintf(fp,"%d\n", utolso->o_meret);
-            fprintf(fp,"%d\n", utolso->el_meret);
-            fprintf(fp,"%s\n", utolso->nev);
+            fprintf(fp,"%s;", utolso->nev);
             for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s %d\n",utolso->o_lista[i],*(utolso->ml[i]));
+                fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
             }
+            fprintf(fp,";");
             for(int i=0;i<utolso->el_meret;i++){
-                fprintf(fp,"%s\n",utolso->el_lista[i]);
+                fprintf(fp,"%s?",utolso->el_lista[i]);
             }
+            fprintf(fp,";");
+            fprintf(fp,"\n");
             utolso = utolso->kov;
         }while(utolso->kov != NULL);
+            fprintf(fp,"%s;", utolso->nev);
+            for(int i=0;i<utolso->o_meret;i++){
+                fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
+            }
+            fprintf(fp,";");
+            for(int i=0;i<utolso->el_meret;i++){
+                fprintf(fp,"%s?",utolso->el_lista[i]);
+            }
+            fprintf(fp,";");
+            fprintf(fp,"\n");
     }
 }
 
@@ -182,20 +182,46 @@ void receptet_felszabadit(Recept **eleje){
 
     }
 }
+// Megjegyzés: A lenti függvényt "összefoltoztam". Néhány trükköt, például a tokenezést és az strtok() függvényt az internetről tanultam, néhány ötlet pedig
+// a sajátom. A függvény nem copy-paste, de nem is teljesen a saját ötletem.
+// string = A használt string, stop = A delimiter karakter, esetünkben a ;
+char** elvalaszt(const char* string, const char* stop, int* hossz) {
+    char* temp = strdup(string);
+    char* token;
+    char** eredmeny = NULL;
+    int meret = 0;
 
+    token = strtok(temp, stop);
+    while (token != NULL) {
+        eredmeny = realloc(eredmeny, sizeof(char*) * (meret + 1));
+        eredmeny[meret] = strdup(token);
+        meret++;
+        token = strtok(NULL, stop);
+    }
+
+
+    if (hossz != NULL) {
+        *hossz = meret;
+    }
+
+    return eredmeny;
+}
 void recept_lista(Recept **eleje){
+    FILE *fp = fopen("receptek.txt", "r");
 
-    FILE *fp,*fp2;
+    char sor[256];
+    while (fgets(sor, sizeof(sor), fp)) {
 
-    fp2 = fopen("recept.txt","r");
-
-    int o_meret,el_meret,recept_szamolo,szamolo=0;
-    fp = fopen("receptek.txt","r");
-    fscanf(fp2,"%d",&recept_szamolo);
-    while(recept_szamolo != szamolo){
-        fscanf(fp,"%d",&o_meret);
         Recept *uj = (Recept*)malloc(sizeof(Recept));
-        fscanf(fp,"%d",&el_meret);
+        int hossz,o_meret,el_meret;
+        char **elvalasztott = elvalaszt(sor, ";",&hossz);
+
+        strcpy(uj->nev,elvalasztott[0]);
+
+        char **eredmeny2 = elvalaszt(elvalasztott[1], "?",&hossz);
+
+        o_meret = hossz;
+
         uj->o_lista = malloc(o_meret*sizeof(char *));
         if (uj->o_lista == NULL){
             printf("Memóriafoglalási hiba!");
@@ -209,18 +235,30 @@ void recept_lista(Recept **eleje){
             }
         }
 
-        uj->ml = malloc(o_meret*sizeof(int *));
+        uj->ml = malloc(o_meret*sizeof(char *));
         if (uj->ml == NULL){
             printf("Memóriafoglalási hiba!");
             exit(7);
         }
         for(int i=0;i<o_meret;i++){
-            uj->ml[i] = malloc(sizeof(int));
+            uj->ml[i] = malloc(52*sizeof(char));
             if (uj->ml[i] == NULL){
                 printf("Memóriafoglalási hiba!");
                 exit(8);
             }
         }
+
+        for(int i = 0; i < hossz; i++){
+            char **o_lista_elvalasztott = elvalaszt(eredmeny2[i], ",", NULL);
+            strcpy(uj->o_lista[i],o_lista_elvalasztott[0]);
+            strcpy(uj->ml[i],o_lista_elvalasztott[1]);
+            free(o_lista_elvalasztott);
+        }
+
+
+        char **leirasok = elvalaszt(elvalasztott[2], "?",&hossz);
+
+        el_meret = hossz;
         uj->el_lista = malloc(el_meret*sizeof(char *));
         if (uj->el_lista == NULL){
             printf("Memóriafoglalási hiba!");
@@ -234,23 +272,13 @@ void recept_lista(Recept **eleje){
             }
         }
 
-        fscanf(fp,"%s",uj->nev);
-
-        for(int i=0;i<o_meret;i++) {
-            fgets(uj->o_lista[i], 52, fp);
-            uj->o_lista[i][strcspn(uj->o_lista[i], "\n")] = '\0';
-            fscanf(fp, "%d", uj->ml[i]);
-        }
-
-        for(int i=0;i<el_meret;i++) {
-            fgets(uj->el_lista[i], 201, fp);
-             uj->el_lista[i][strcspn(uj->el_lista[i], "\n")] = '\0';
+        for(int i = 0; i < el_meret; i++){
+            strcpy(uj->el_lista[i], leirasok[i]);
         }
 
         uj->o_meret = o_meret;
         uj->el_meret = el_meret;
-
-        Recept *utolso = *eleje;
+        Recept *utolso=*eleje;
 
         if (*eleje == NULL) {
             *eleje = uj;
@@ -262,39 +290,58 @@ void recept_lista(Recept **eleje){
             }
             utolso->kov = uj;
             uj->kov = NULL;
-        szamolo++;
         }
+        free(elvalasztott);
+        free(leirasok);
+        free(eredmeny2);
     }
     fclose(fp);
 }
 
-void recept_listaz(Recept **eleje){
-    Recept *utolso = eleje;
+int receptet_listaz(Recept **eleje){
+    Recept *utolso = *eleje;
     int szamolo=1;
-    do{
+    while(utolso->kov != NULL){
         printf("%d.",szamolo);
         receptet_kiir(utolso);
         utolso = utolso->kov;
         szamolo++;
-    }while(utolso->kov != NULL);
+    }
+    printf("%d.",szamolo);
+    receptet_kiir(utolso);
+    return szamolo;
 }
 
-void recept_torol(Recept **eleje,int mennyi){
-    Recept *elozo,*temp = NULL;
-    temp = *eleje;
-    int szamolo=0;
-    if(mennyi == 1){
+void recept_torol(Recept **eleje, int mennyi){
+    Recept *elozo = NULL, *temp = *eleje;
+    int szamolo = 0;
+
+    if (mennyi == 1){
+        elozo = *eleje;
         *eleje = temp->kov;
-        free(temp);
+        osszetevot_felszabadit(elozo->el_lista, elozo->el_meret);
+        osszetevot_felszabadit(elozo->o_lista, elozo->o_meret);
+        osszetevot_felszabadit(elozo->ml, elozo->o_meret);
+        free(elozo);
         return;
     }
-    else{
-        while(szamolo != mennyi-1){
-            temp->kov;
-            szamolo++;
-        }
+
+    while (temp != NULL && szamolo < mennyi - 1){
         elozo = temp;
-        elozo->kov = temp->kov;
+        temp = temp->kov;
+        szamolo++;
+    }
+
+    if (temp != NULL){
+        if (temp->kov == NULL) {
+            elozo->kov = NULL;
+        }
+        else {
+            elozo->kov = temp->kov;
+        }
+        osszetevot_felszabadit(temp->el_lista, temp->el_meret);
+        osszetevot_felszabadit(temp->o_lista, temp->o_meret);
+        osszetevot_felszabadit(temp->ml, temp->o_meret);
         free(temp);
     }
 }
