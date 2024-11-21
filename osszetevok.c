@@ -14,58 +14,89 @@
 #include "uf.h"
 #include "debugmalloc.h"
 
+typedef struct Osszetevo{
+    char **o_lista;
+    int meret;
+} Osszetevo;
+
+void osszetevot_fajlba_ir(Osszetevo lista){
+    FILE *fp;
+    fp =fopen("osszetevok.txt","w");
+    for(int i=0;i<lista.meret;i++){
+        fputs(lista.o_lista[i],fp);
+    }
+    fclose(fp);
+}
 
 // A függvény összetevőket ad hozzá az "osszetevok.txt" fájlhoz.
-char **uj_osszetevo(char **lista,int meret){
-    bool van_e;
-    do{
-        char valasz[5];
-        char ujosszetevo[52];
-        printf("Van még új összetevő?");
-        scanf("%s", &valasz);
-        if(valaszt_tesztel(valasz)  == 1){
-            printf("Add meg az új összetevőt:");
-            scanf("%s",&ujosszetevo);
-            lista = listat_bovit(lista,meret+1,ujosszetevo);
-            meret++;
-            van_e = true;
-        }else if(valaszt_tesztel(valasz) == 0) {
-            van_e = false;
-            return lista;
+void uj_osszetevo(Osszetevo *lista,int meret){
+    char ujosszetevo[52];
+    printf("Add meg az új összetevőt:");
+    scanf("%s",ujosszetevo);
+    char **temp;
+    temp = malloc((meret)*sizeof(char *));
+        if(temp == NULL){
+            printf("Memóriafoglalási hiba!");
+            return ;
         }
-        else{
-            printf("\nIsmeretlen választás kérlek az igen/nem szavakat vagy I/H betut adj meg\n");
-            van_e = true;
+        for(int i=0;i<meret;i++){
+            temp[i] = malloc(52 * sizeof(char));
+            if (temp[i] == NULL){
+                printf("Memóriafoglalási hiba!");
+                return;
+            }
         }
-    }while(van_e);
+    for(int i=0;i<meret;i++){
+        strcpy(temp[i],lista->o_lista[i]);
+    }
+
+    osszetevot_felszabadit(lista->o_lista,meret);
+    lista->o_lista = malloc((meret+1)*sizeof(char *));
+    if (lista->o_lista == NULL){
+        printf("Memóriafoglalási hiba!");
+        return;
+    }
+    for(int i=0;i<(meret+1);i++){
+        lista->o_lista[i] = malloc(52 * sizeof(char));
+        if (lista->o_lista[i] == NULL){
+            printf("Memóriafoglalási hiba!");
+            return;
+        }
+        }
+    for(int i=0;i<meret;i++){
+        strcpy(lista->o_lista[i],temp[i]);
+    }
+    strcpy(lista->o_lista[meret],ujosszetevo);
+    osszetevot_felszabadit(temp,meret);
 }
 
 // Az osszetevo_lista függvény az "osszetevok.txt" fájlban levő adatokat sztringek listájává alakítja.
-char **osszetevo_lista(){
+Osszetevo osszetevo_lista(){
     FILE *fp;
-    char **osszetevok;
-    int meret = sorokat_szamol("osszetevok.txt");
+    Osszetevo lista;
+    lista.meret = malloc(sizeof(int));
+    lista.meret = sorokat_szamol("osszetevok.txt");
     fp = fopen("osszetevok.txt","r");
     if (fp == NULL) {
         printf("Fájlkezelési hiba! \n");
-        return NULL;
+        return;
     }
-    osszetevok = malloc(meret*sizeof(char *));
-    if (osszetevok == NULL){
+    lista.o_lista = malloc(lista.meret*sizeof(char *));
+    if (lista.o_lista == NULL){
         printf("Memóriafoglalási hiba!");
-        return NULL;
+        return;
     }
-    for(int i=0;i<meret;i++){
-        osszetevok[i] = malloc(52 * sizeof(char));
-        if (osszetevok[i] == NULL){
+    for(int i=0;i<lista.meret;i++){
+        lista.o_lista[i] = malloc(52 * sizeof(char));
+        if (lista.o_lista[i] == NULL){
             printf("Memóriafoglalási hiba!");
-            return NULL;
+            return;
         }
-        fgets(osszetevok[i],52,fp);
+        fgets(lista.o_lista[i],52,fp);
 
     }
     fclose(fp);
-    return osszetevok;
+    return lista;
 }
 
 // Felszabadítja az osszetevo_lista által létrehozott listát.
@@ -78,37 +109,63 @@ void osszetevot_felszabadit(char **osszetevok, int meret) {
     }
 }
 
+/*void osszetevot_listat_felszabadit(Osszetevo lista) {
+    if (lista.o_lista != NULL) {
+        for (int i = 0; i < lista.meret; i++) {
+            free(lista.o_lista[i]);
+        }
+        free(lista);
+    }
+}*/
+
 // A függvény kilistázza az ismert összetevőket és a felhasználó az index megadásával tud belőle törölni
-void osszetevot_torol(){
-    int meret = sorokat_szamol("osszetevok.txt");
-    char **lista = osszetevo_lista();
+void osszetevot_torol(Osszetevo *lista,int meret){
     int valasztas;
-    FILE *fp;
-    fp = fopen("osszetevok.txt","w");
     bool van_e = true;
     char valasz[5];
     while(van_e == true){
         printf("Van még törlendő elem?");
         scanf("%s",&valasz);
         for(int i=0;i<meret;i++){
-            printf("%d. %s \n",i+1,lista[i]);
+            printf("%d. %s \n",i+1,lista->o_lista[i]);
         }
         if(valaszt_tesztel(valasz) == 1){
             printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
             printf("Választás:");
             scanf("%d",&valasztas);
-            if(valasztas>meret){
+            if(valasztas>meret || valasztas < 1){
                 printf("Nem megfelelő számot adtál meg!");
                 printf("Választás:");
                 scanf("%d",&valasztas);
             }
-            for(int i=0;i<meret;i++){
-                if (valasztas-1== i){
-                    continue;
+            else{
+                char **o_lista;
+                o_lista = malloc((meret-1)*sizeof(char *));
+                if(o_lista == NULL){
+                    printf("Memóriafoglalási hiba!");
+                    exit(9);
                 }
-                else
-                    fputs(lista[i],fp);
+                for(int i=0;i<(meret-1);i++){
+                    o_lista[i] = malloc(52 * sizeof(char));
+                    if (o_lista[i] == NULL){
+                        printf("Memóriafoglalási hiba!");
+                        exit(10);
+                    }
+
                 }
+                for(int i=0;i<meret;i++){
+                    if(valasztas-1 <= i){
+                        strcpy(o_lista[i],lista->o_lista[i+1]);;
+                    }
+                    else{
+                        strcpy(o_lista[i],lista->o_lista[i]);
+                    }
+                lista->meret--;
+                //osszetevot_felszabadit(lista->o_lista,meret);
+                lista->o_lista = o_lista;
+                //osszetevot_felszabadit(o_lista,meret);
+                }
+            }
         }
         else if (valaszt_tesztel(valasz) == 0) {
             van_e = false;
@@ -117,8 +174,5 @@ void osszetevot_torol(){
             printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
             van_e = true;
         }
-
     }
-        fclose(fp);
-        osszetevot_felszabadit(lista,meret);
 }

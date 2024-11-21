@@ -10,4 +10,5 @@ void recept_lista(Recept **eleje);
 int recept_szamolo(Recept **eleje);
 int recept_listaz(Recept **eleje);
 void recept_torol(Recept **eleje,int mennyi);
+int recept_szamolo(Recept **eleje);
 #endif // RECEPT_H_INCLUDED

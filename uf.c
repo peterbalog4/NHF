@@ -8,6 +8,7 @@
 #include <string.h>
 #include "debugmalloc.h"
 #include "recept.h"
+#include "osszetevok.h"
 
  int sorokat_szamol(char *fajl){
     FILE *fp;
@@ -70,25 +71,6 @@ void listat_kiir(char **lista, int meret){
         printf("\n %d. %s",i+1,lista[i]);
     }
     printf("\n");
-}
-
-// Kiírja egy lista összes elemét egy fájlba.
-void listat_fajlba_ir(char **lista, int meret ,FILE *fp){
-    for(int i=0; i<meret;i++){
-        fprintf(fp," %s ",lista[i]);
-    }
-}
-
-char **listat_bovit(char **lista,int ujmeret,char *adat){
-    char **ujlista;
-    ujlista = malloc(ujmeret*sizeof(char));
-    for(int i=0;i<ujmeret;i++){
-        strcpy(ujlista[i],lista[i]);
-    }
-    free(lista);
-    strcpy(ujlista[ujmeret],adat);
-    return ujlista;
-
 }
 
 void uj_sort_torol(char *string) {

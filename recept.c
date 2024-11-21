@@ -17,8 +17,7 @@ typedef struct Recept{
 
 void uj_recept(Recept **eleje){
     Recept *uj = (Recept*)malloc(sizeof(Recept));
-    char**lista = osszetevo_lista();
-    int meret = sorokat_szamol("osszetevok.txt");
+    Osszetevo lista = osszetevo_lista();
 
     printf("Add meg a recept nevét:");
     scanf("%50s",uj->nev);
@@ -54,12 +53,12 @@ void uj_recept(Recept **eleje){
     }
 
     if(o_meret >= 0){
-        listat_kiir(lista,meret);
+        listat_kiir(lista.o_lista,lista.meret);
         for(int i=0;i < o_meret;i++){
             printf("Választás:");
             scanf("%d",&valasz);
-            lista[valasz-1][strcspn(lista[valasz-1], "\n")] = '\0';
-            strcpy(uj->o_lista[i],lista[valasz-1]);
+            lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
+            strcpy(uj->o_lista[i],lista.o_lista[valasz-1]);
             printf("Hány ml-t?");
             scanf("%s", uj->ml[i]);
         }
@@ -88,8 +87,17 @@ void uj_recept(Recept **eleje){
 
     if(el_meret >= 0){
         for(int i=0;i < el_meret;i++){
+            char *temp;
             printf("%d. lépés:",i+1);
-            scanf("%200s", uj->el_lista[i]);
+            fgets(temp,201,stdin);
+            if(strcmp(temp,"\n") == 0){
+                printf("Hibás bemenet!");
+                receptet_felszabadit(&eleje);
+                exit(9);
+            }
+            else {
+                strcpy(uj->el_lista[i],temp);
+            }
         }
     }
     else{
@@ -99,7 +107,8 @@ void uj_recept(Recept **eleje){
     uj->el_meret = el_meret;
 
 
-    osszetevot_felszabadit(lista,meret);
+    osszetevot_felszabadit(lista.o_lista,lista.meret);
+    free(lista.meret);
 
     if (*eleje == NULL){
         *eleje = uj;
@@ -344,4 +353,137 @@ void recept_torol(Recept **eleje, int mennyi){
         osszetevot_felszabadit(temp->ml, temp->o_meret);
         free(temp);
     }
+}
+
+void recept_modosit(Recept **eleje,int mennyi){
+    int valasz;
+    Recept *utolso= *eleje;
+    int szamolo =0;
+    while (eleje != NULL && szamolo < mennyi - 1 && mennyi != 1){
+        utolso = utolso->kov;
+        szamolo++;
+    }
+
+    printf("Mit szeretnél módosítani?\n 1. Név \n 2. Összetevők \n 3. Elkészítési leírás \n");
+    scanf("%d", &valasz);
+    switch(valasz){
+        case 1:{
+            printf("Új név:");
+            scanf("%s",utolso->nev);
+            break;
+        }
+        case 2:{
+            Osszetevo lista = osszetevo_lista();
+            int valasz;
+            osszetevot_felszabadit(utolso->o_lista,utolso->o_meret);
+            osszetevot_felszabadit(utolso->ml,utolso->o_meret);
+            int o_meret;
+            printf("Hány összetevő legyen?");
+            scanf("%d", &o_meret);
+
+            utolso->o_lista = malloc(o_meret*sizeof(char *));
+            if (utolso->o_lista == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(1);
+            }
+            for(int i=0;i<o_meret;i++){
+                utolso->o_lista[i] = malloc(52 * sizeof(char));
+                if (utolso->o_lista[i] == NULL){
+                    printf("Memóriafoglalási hiba!");
+                    exit(2);
+                }
+            }
+
+            utolso->ml = malloc(o_meret*sizeof(int *));
+            if (utolso->ml == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(7);
+            }
+            for(int i=0;i<o_meret;i++){
+                utolso->ml[i] = malloc(sizeof(int));
+                if (utolso->ml[i] == NULL){
+                    printf("Memóriafoglalási hiba!");
+                    exit(8);
+                }
+            }
+            if(o_meret >= 0){
+                listat_kiir(lista.o_lista,lista.meret);
+                for(int i=0;i < o_meret;i++){
+                    printf("Választás:");
+                    scanf("%d",&valasz);
+                    lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
+                    strcpy(utolso->o_lista[i],lista.o_lista[valasz-1]);
+                    printf("Hány ml-t?");
+                    scanf("%s", utolso->ml[i]);
+                }
+            }
+            else{
+            exit(3);
+            }
+            utolso->o_meret = o_meret;
+            osszetevot_felszabadit(lista.o_lista,lista.meret);
+            free(lista.meret);
+            break;
+        }
+        case 3:{
+            osszetevot_felszabadit(utolso->el_lista,utolso->el_meret);
+            int el_meret;
+            printf("Hány lépés legyen az elkészítési leírás?");
+            scanf("%d",&el_meret);
+
+            utolso->el_lista = malloc(el_meret*sizeof(char *));
+            if (utolso->el_lista == NULL){
+                printf("Memóriafoglalási hiba!");
+                exit(4);
+            }
+            for(int i=0;i<el_meret;i++){
+                utolso->el_lista[i] = malloc(201 * sizeof(char));
+                if (utolso->el_lista[i] == NULL){
+                    printf("Memóriafoglalási hiba!");
+                    exit(5);
+                }
+            }
+
+            if(el_meret > 0){
+                for(int i=0;i < el_meret;i++){
+                    char temp[201];
+                    printf("%d. lépés:",i+1);
+                    gets(temp);
+                    if(temp[0] == '\n'){
+                        printf("Hibás bemenet!");
+                        receptet_felszabadit(&eleje);
+                        exit(9);
+                    }
+                    else {
+                        strcpy(utolso->el_lista[i],temp);
+                    }
+                }
+            }
+            else{
+                exit(6);
+            }
+            utolso->el_meret = el_meret;
+            break;
+        }
+        default:{
+            printf("Hibás index!");
+            fomenu();
+            break;
+        }
+
+
+
+
+    }
+
+}
+
+int recept_szamolo(Recept **eleje){
+    Recept *utolso = *eleje;
+    int szamolo=1;
+    while(utolso->kov != NULL){
+        utolso = utolso->kov;
+        szamolo++;
+    }
+    return szamolo;
 }

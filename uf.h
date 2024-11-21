@@ -7,6 +7,5 @@ int valaszt_tesztel(char *valasz);
 char **ures_lista(int meret, int charsize);
 void listat_kiir(char **lista, int meret);
 void listat_fajlba_ir(char **lista, int meret,FILE *fp);
-char **listat_bovit(char **lista,int ujmeret,char *adat);
 void uj_sort_torol(char *string);
 #endif // UF_H_INCLUDED
