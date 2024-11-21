@@ -5,6 +5,7 @@
 #include "uf.h"
 #include "debugmalloc.h"
 
+// A recepteket tároló láncolt lista struktúrája.
 typedef struct Recept{
     char nev[51];
     char **o_lista;
@@ -15,6 +16,7 @@ typedef struct Recept{
     struct Recept *kov;
 } Recept;
 
+//Hozzáad egy új receptet a recepteket tároló láncolt listához.
 void uj_recept(Recept **eleje){
     Recept *uj = (Recept*)malloc(sizeof(Recept));
     Osszetevo lista = osszetevo_lista();
@@ -126,6 +128,7 @@ void uj_recept(Recept **eleje){
     }
 }
 
+//Kiír egy konkrét receptet.
 void receptet_kiir(Recept *recept){
     if (recept != NULL) {
         printf("Név: %s\n", recept->nev);
@@ -140,6 +143,7 @@ void receptet_kiir(Recept *recept){
     }
 }
 
+//A recepteket tároló láncolt listát fájlba írja.
 void receptet_fajlba_ir(Recept **eleje){
     FILE *fp;
     Recept *utolso = *eleje;
@@ -192,8 +196,8 @@ void receptet_felszabadit(Recept **eleje){
     }
 }
 // Megjegyzés: A lenti függvényt "összefoltoztam". Néhány trükköt, például a tokenezést és az strtok() függvényt az internetről tanultam, néhány ötlet pedig
-// a sajátom. A függvény nem copy-paste, de nem is teljesen a saját ötletem.
-// string = A használt string, stop = A delimiter karakter, esetünkben a ;
+// a sajátom. A függvény nem copy-paste, de nem teljesen a Prog1 tananyagra épül.
+// string = A használt string, stop = A delimiter karakter, esetünkben a ; | ? | ,
 char** elvalaszt(const char* string, const char* stop, int* hossz) {
     char* temp = strdup(string);
     char* token;
@@ -215,6 +219,8 @@ char** elvalaszt(const char* string, const char* stop, int* hossz) {
 
     return eredmeny;
 }
+//A szemem fénye. Ez a függvény olvassa ki a receptek.txt fájlból a recepteket és épít belőlük láncolt listát. A függvény két nap munka
+//és ipari mennyiségű kávé eredménye.
 void recept_lista(Recept **eleje){
     FILE *fp = fopen("receptek.txt", "r");
 
@@ -307,7 +313,8 @@ void recept_lista(Recept **eleje){
     fclose(fp);
 }
 
-int receptet_listaz(Recept **eleje){
+//Ez a függvény a teljes recepteket tároló láncolt listát kiírja a képernyőre.
+void receptet_listaz(Recept **eleje){
     Recept *utolso = *eleje;
     int szamolo=1;
     while(utolso->kov != NULL){
@@ -321,6 +328,7 @@ int receptet_listaz(Recept **eleje){
     return szamolo;
 }
 
+// Ez a függvény eltávolít egy receptet a recepteket tároló láncolt listából.
 void recept_torol(Recept **eleje, int mennyi){
     Recept *elozo = NULL, *temp = *eleje;
     int szamolo = 0;
@@ -355,6 +363,7 @@ void recept_torol(Recept **eleje, int mennyi){
     }
 }
 
+// Ez a függvény módosít egy receptet a recepteket tároló láncolt listában.
 void recept_modosit(Recept **eleje,int mennyi){
     int valasz;
     Recept *utolso= *eleje;
@@ -478,6 +487,7 @@ void recept_modosit(Recept **eleje,int mennyi){
 
 }
 
+//Megszámolja, hogy hány recept van.
 int recept_szamolo(Recept **eleje){
     Recept *utolso = *eleje;
     int szamolo=1;

@@ -147,6 +147,7 @@ void almenu_uj(){
 void almenu_recept(){
     Recept *eleje = NULL;
     recept_lista(&eleje);
+    int receptek_szama = recept_szamolo(&eleje);
     int valasztas;
     int valasz;
     printf("\n 1. Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... \n Választás:");
@@ -154,7 +155,7 @@ void almenu_recept(){
     switch(valasztas){
         case 1:
             printf("Melyik receptet szeretnéd módosítani?\n");
-            int receptek_szama = receptet_listaz(&eleje);
+            receptet_listaz(&eleje);
             printf("\n Választás:");
             scanf("%d",&valasz);
             if(0 < valasz && valasz <= receptek_szama){
@@ -166,11 +167,15 @@ void almenu_recept(){
             }
             break;
         case 2:
+            if(receptek_szama == 1){
+                printf("Az utolsó receptet nem lehet törölni!");
+                break;
+            }
             printf("Melyik receptet szeretnéd törölni?\n");
-            int receptek_szama2 = receptet_listaz(&eleje);
+            receptet_listaz(&eleje);
             printf("\nVálasztás:");
             scanf("%d",&valasz);
-            if(0 < valasz && valasz <= receptek_szama2){
+            if(0 < valasz && valasz <= receptek_szama){
                 recept_torol(&eleje,valasz);
             }
             else{
@@ -199,7 +204,7 @@ void almenu_keres(){
     recept_lista(&eleje);
     int recept_szam = recept_szamolo(&eleje);
     int valasztas;
-    printf("\n1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
+    printf("\n 1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
     scanf("%d", &valasztas);
     switch(valasztas){
         case 1:
@@ -209,7 +214,7 @@ void almenu_keres(){
             innek_egy_kis(&eleje, recept_szam);
             break;
         case 3:
-            //el_kell_hasznalni();
+            el_kell_hasznalni(&eleje,recept_szam);
             break;
         default:
             almenu_keres();
