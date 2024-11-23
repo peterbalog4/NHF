@@ -119,19 +119,19 @@ void osszetevot_torol(Osszetevo *lista,int meret){
     printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
     printf("Választás:");
     scanf("%d",&valasztas);
-    if(valasztas>meret || valasztas < 1){
+    if(valasztas>meret || valasztas < 0){
         printf("Nem megfelelő számot adtál meg!");
         printf("Választás:");
         scanf("%d",&valasztas);
     }
     else{
         char **temp;
-        temp = malloc((meret)*sizeof(char *));
+        temp = malloc(meret*sizeof(char *));
         if(temp == NULL){
             printf("Memóriafoglalási hiba!");
             exit(9);
         }
-        for(int i=0;i<(meret);i++){
+        for(int i=0;i<meret;i++){
             temp[i] = malloc(52 * sizeof(char));
             if (temp[i] == NULL){
                 printf("Memóriafoglalási hiba!");
@@ -139,21 +139,34 @@ void osszetevot_torol(Osszetevo *lista,int meret){
             }
 
         }
-        for int(i=0;i<meret;i++){
-            strcpy(temp[i];lista->o_lista[i])
+        for (int i=0;i<meret;i++){
+            strcpy(temp[i],lista->o_lista[i]);
         }
 
-        //Bugfixelni
+        osszetevot_felszabadit(lista->o_lista,meret);
+        lista->o_lista = malloc((meret-1)*sizeof(char *));
+        if (lista->o_lista == NULL){
+            printf("Memóriafoglalási hiba!");
+            return;
+        }
+        for(int i=0;i<meret-1;i++){
+            lista->o_lista[i] = malloc(52 * sizeof(char));
+            if (lista->o_lista[i] == NULL){
+                printf("Memóriafoglalási hiba!");
+                return;
+            }
+        }
+        int k=0;
         for(int i=0;i<meret;i++){
-            if(valasztas-1 <= i){
-                strcpy(o_lista[i],lista->o_lista[i+1]);;
+            if(valasztas-1 == i){
+                continue;
             }
             else{
-                strcpy(o_lista[i],lista->o_lista[i]);
+                strcpy(lista->o_lista[k++],temp[i]);
             }
-        //osszetevot_felszabadit(lista->o_lista,meret);
-        lista->o_lista = o_lista;
-        //osszetevot_felszabadit(o_lista,meret);
         }
+
+        osszetevot_felszabadit(temp,meret);
+
     }
 }

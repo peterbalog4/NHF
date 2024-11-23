@@ -82,6 +82,11 @@ void almenu_osszetevo(){
             bool van_e = true;
             char valasz[5];
             while(van_e == true){
+                if(lista.meret == 1){
+                    printf("Az utolsó elemet nem lehet törölni!\n");
+                    osszetevot_felszabadit(lista.o_lista,lista.meret);
+                    return;
+                }
                 printf("Van még törlendő elem?");
                 scanf("%5s",valasz);
                 if(valaszt_tesztel(valasz) == 1){
@@ -207,7 +212,7 @@ void almenu_recept(){
             break;
         case 2:
             if(receptek_szama == 1){
-                printf("Az utolsó receptet nem lehet törölni!");
+                printf("Az utolsó receptet nem lehet törölni!\n");
                 break;
             }
             printf("Melyik receptet szeretnéd törölni?\n");
@@ -240,7 +245,7 @@ void almenu_keres(){
     recept_lista(&eleje);
     int recept_szam = recept_szamolo(&eleje);
     int valasztas;
-    printf("\n 1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... 4. Visszalépés \n Választás:");
+    printf("\n 1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n 4. Keresés név szerint \n 5. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
     if(0 > valasztas || valasztas > 5){
         printf("Hibás index!\n");
@@ -249,7 +254,7 @@ void almenu_keres(){
     }
     switch(valasztas){
         case 1:
-            //nincs_otlet();
+            nincs_otlet(&eleje,recept_szam);
             break;
         case 2:
             innek_egy_kis(&eleje, recept_szam);
@@ -258,6 +263,9 @@ void almenu_keres(){
             el_kell_hasznalni(&eleje,recept_szam);
             break;
         case 4:
+            //nev_szerint();
+            break;
+        case 5:
             fomenu();
             break;
     }

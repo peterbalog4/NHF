@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include "osszetevok.h"
 #include "uf.h"
 #include "debugmalloc.h"
@@ -158,4 +160,35 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     osszetevot_felszabadit(keres,mennyit);
 
 
+}
+
+void nincs_otlet(Recept **eleje,int receptek_szama){
+    ide:
+    srand(time(NULL));
+    int r = rand();
+    r = r % receptek_szama;
+    char valasz[5];
+    Recept *utolso = *eleje;
+    int szamolo = 1;
+    while(szamolo != r){
+        utolso = utolso->kov;
+        szamolo++;
+    }
+    receptet_kiir(utolso);
+    printf("Ez a recept megfelelő?");
+    scanf("%5s",valasz);
+    bool van_e =true;
+    while(van_e){
+        if (valaszt_tesztel(valasz) == 1){
+            return;
+        }
+        else if (valaszt_tesztel(valasz) == 0) {
+            goto ide;
+            break;
+        }
+        else{
+            printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
+            van_e = true;
+        }
+    }
 }

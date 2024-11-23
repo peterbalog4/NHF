@@ -7,8 +7,8 @@ char** elvalaszt(const char* string, const char* stop, int* hossz);
 void receptet_kiir(Recept *recept);
 void receptet_felszabadit(Recept **eleje);
 void recept_lista(Recept **eleje);
-int recept_szamolo(Recept **eleje);
 void recept_listaz(Recept **eleje);
-void recept_torol(Recept **eleje,int mennyi);
+void recept_torol(Recept **eleje,int hanyadik);
+void recept_modosit(Recept **eleje,int mennyi);
 int recept_szamolo(Recept **eleje);
 #endif // RECEPT_H_INCLUDED

@@ -160,7 +160,7 @@ void receptet_fajlba_ir(Recept **eleje){
     FILE *fp;
     Recept *utolso = *eleje;
     fp = fopen("receptek.txt","w");
-    if(utolso != NULL){
+    if(utolso->kov != NULL){
         do{
             fprintf(fp,"%s;", utolso->nev);
             for(int i=0;i<utolso->o_meret;i++){
@@ -184,6 +184,18 @@ void receptet_fajlba_ir(Recept **eleje){
             }
             fprintf(fp,";");
             fprintf(fp,"\n");
+    }
+    else{
+        fprintf(fp,"%s;", utolso->nev);
+        for(int i=0;i<utolso->o_meret;i++){
+            fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
+        }
+        fprintf(fp,";");
+        for(int i=0;i<utolso->el_meret;i++){
+            fprintf(fp,"%s?",utolso->el_lista[i]);
+        }
+        fprintf(fp,";");
+        fprintf(fp,"\n");
     }
 }
 
@@ -341,11 +353,11 @@ void receptet_listaz(Recept **eleje){
 }
 
 // Ez a függvény eltávolít egy receptet a recepteket tároló láncolt listából.
-void recept_torol(Recept **eleje, int mennyi){
+void recept_torol(Recept **eleje, int hanyadik){
     Recept *elozo = NULL, *temp = *eleje;
-    int szamolo = 0;
+    int szamolo = 1;
 
-    if (mennyi == 1){
+    if (hanyadik == 1){
         elozo = *eleje;
         *eleje = temp->kov;
         osszetevot_felszabadit(elozo->el_lista, elozo->el_meret);
@@ -355,7 +367,7 @@ void recept_torol(Recept **eleje, int mennyi){
         return;
     }
 
-    while (temp != NULL && szamolo < mennyi - 1){
+    while (temp->kov != NULL && szamolo < hanyadik){
         elozo = temp;
         temp = temp->kov;
         szamolo++;

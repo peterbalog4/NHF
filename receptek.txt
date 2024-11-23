@@ -1,4 +1,13 @@
-Gyumolcs koktel;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
-Gyumolcs koktel;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
-Gyumolcs koktel;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
-gin;bor,51?sor,52?;keverd?kavard?tekerd?;
+Gyumolcs koktel1;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel2;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel3;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel4;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel5;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel6;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel7;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel8;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel9;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel10;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel11;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel12;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+Gyumolcs koktel13;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
