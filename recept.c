@@ -22,11 +22,21 @@ void uj_recept(Recept **eleje){
     Osszetevo lista = osszetevo_lista();
 
     printf("Add meg a recept nevét:");
-    scanf("%50s",uj->nev);
+    fflush(stdin);
+    fgets(uj->nev,52,stdin);
+    uj->nev[strcspn(uj->nev, "\n")] = '\0';
 
     int o_meret,valasz;
     printf("Hány összetevő legyen?");
     scanf("%d", &o_meret);
+    if (0 > o_meret || o_meret > 18446744073709551615){
+        printf("Hibás index!");
+        return;
+    }
+    if(0 >o_meret ){
+        printf("Hibás index!");
+        return;
+    }
 
     uj->o_lista = malloc(o_meret*sizeof(char *));
     if (uj->o_lista == NULL){
@@ -59,6 +69,7 @@ void uj_recept(Recept **eleje){
         for(int i=0;i < o_meret;i++){
             printf("Választás:");
             scanf("%d",&valasz);
+            //Hibakezelés!!
             lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
             strcpy(uj->o_lista[i],lista.o_lista[valasz-1]);
             printf("Hány ml-t?");
@@ -73,6 +84,10 @@ void uj_recept(Recept **eleje){
 
     printf("Hány lépés legyen az elkészítési leírás?");
     scanf("%d",&el_meret);
+    if (0 > el_meret || el_meret > 18446744073709551615){
+        printf("Hibás index!");
+        return;
+    }
 
     uj->el_lista = malloc(el_meret*sizeof(char *));
     if (uj->el_lista == NULL){
@@ -89,16 +104,14 @@ void uj_recept(Recept **eleje){
 
     if(el_meret >= 0){
         for(int i=0;i < el_meret;i++){
-            char *temp;
             printf("%d. lépés:",i+1);
-            fgets(temp,201,stdin);
-            if(strcmp(temp,"\n") == 0){
+            fflush(stdin);
+            fgets(uj->el_lista[i],201,stdin);
+            uj->el_lista[i][strcspn(uj->el_lista[i], "\n")] = '\0';
+            if(strcmp(uj->el_lista[i],"\n") == 0){
                 printf("Hibás bemenet!");
                 receptet_felszabadit(&eleje);
                 exit(9);
-            }
-            else {
-                strcpy(uj->el_lista[i],temp);
             }
         }
     }
@@ -110,7 +123,6 @@ void uj_recept(Recept **eleje){
 
 
     osszetevot_felszabadit(lista.o_lista,lista.meret);
-    free(lista.meret);
 
     if (*eleje == NULL){
         *eleje = uj;
@@ -375,10 +387,15 @@ void recept_modosit(Recept **eleje,int mennyi){
 
     printf("Mit szeretnél módosítani?\n 1. Név \n 2. Összetevők \n 3. Elkészítési leírás \n");
     scanf("%d", &valasz);
+    if(0 > valasz || valasz > 4){
+        printf("Hibás index!\n");
+        return;
+    }
     switch(valasz){
         case 1:{
             printf("Új név:");
-            scanf("%s",utolso->nev);
+            fflush(stdin);
+            fgets(utolso->nev,52,stdin);
             break;
         }
         case 2:{
@@ -389,6 +406,10 @@ void recept_modosit(Recept **eleje,int mennyi){
             int o_meret;
             printf("Hány összetevő legyen?");
             scanf("%d", &o_meret);
+            if (0 > o_meret || o_meret > 18446744073709551615){
+                printf("Hibás index!");
+                return;
+            }
 
             utolso->o_lista = malloc(o_meret*sizeof(char *));
             if (utolso->o_lista == NULL){
@@ -423,7 +444,8 @@ void recept_modosit(Recept **eleje,int mennyi){
                     lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
                     strcpy(utolso->o_lista[i],lista.o_lista[valasz-1]);
                     printf("Hány ml-t?");
-                    scanf("%s", utolso->ml[i]);
+                    fflush(stdin);
+                    fgets(utolso->ml[i],52,stdin);
                 }
             }
             else{
@@ -439,6 +461,10 @@ void recept_modosit(Recept **eleje,int mennyi){
             int el_meret;
             printf("Hány lépés legyen az elkészítési leírás?");
             scanf("%d",&el_meret);
+            if (0 > el_meret || el_meret > 18446744073709551615){
+                printf("Hibás index!");
+                return;
+            }
 
             utolso->el_lista = malloc(el_meret*sizeof(char *));
             if (utolso->el_lista == NULL){
@@ -457,8 +483,9 @@ void recept_modosit(Recept **eleje,int mennyi){
                 for(int i=0;i < el_meret;i++){
                     char temp[201];
                     printf("%d. lépés:",i+1);
-                    gets(temp);
-                    if(temp[0] == '\n'){
+                    fflush(stdin);
+                    fgets(temp,201,stdin);
+                    if(strcmp(temp,"\n")== 0){
                         printf("Hibás bemenet!");
                         receptet_felszabadit(&eleje);
                         exit(9);
@@ -474,17 +501,7 @@ void recept_modosit(Recept **eleje,int mennyi){
             utolso->el_meret = el_meret;
             break;
         }
-        default:{
-            printf("Hibás index!");
-            fomenu();
-            break;
-        }
-
-
-
-
     }
-
 }
 
 //Megszámolja, hogy hány recept van.

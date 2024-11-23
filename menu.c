@@ -13,11 +13,6 @@
 #include "debugmalloc.h"
 #include "keres.h"
 
-/*typdef struct List{
-    char ** osszetevok;
-    int meret;
-} List;*/
-
 void almenu_osszetevo();
 void almenu_uj();
 void almenu_recept(void);
@@ -29,6 +24,10 @@ void fomenu(void){
     printf("NHF | Koktéloskönyv\n");
     printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n 5. Kilépés.... \n Választás:");
     scanf("%d", &valasztas);
+    if(0 > valasztas || valasztas > 6){
+        printf("Hibás index!");
+        return;
+    }
     switch(valasztas){
         case 1:
             almenu_osszetevo();
@@ -44,9 +43,6 @@ void fomenu(void){
             break;
         case 5:
             return;
-        default:
-            fomenu();
-            break;
     }
 }
 
@@ -56,6 +52,11 @@ void almenu_osszetevo(){
     int valasztas;
     printf("\n 1. Új összetevő hozzáadása \n 2. Összetevő törlése \n 3. Összetevők listája \n 4. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
+    if(0 > valasztas || valasztas > 5){
+        printf("Hibás index!\n");
+        osszetevot_felszabadit(lista.o_lista,lista.meret);
+        return;
+    }
     switch(valasztas){
         case 1:{
             bool van_e = true;
@@ -69,7 +70,6 @@ void almenu_osszetevo(){
                 }
                 else if(valaszt_tesztel(valasz) == 0) {
                     van_e = false;
-                    return;
                 }
                 else{
                 printf("\nIsmeretlen választás kérlek az igen/nem szavakat vagy I/H betut adj meg\n");
@@ -79,19 +79,32 @@ void almenu_osszetevo(){
         break;
         }
         case 2:{
-            osszetevot_torol(&lista,lista.meret);
-            break;
+            bool van_e = true;
+            char valasz[5];
+            while(van_e == true){
+                printf("Van még törlendő elem?");
+                scanf("%5s",valasz);
+                if(valaszt_tesztel(valasz) == 1){
+                    osszetevot_torol(&lista,lista.meret);
+                    lista.meret--;
+                    van_e =true;
+                }
+                else if (valaszt_tesztel(valasz) == 0) {
+                    van_e = false;
+                    break;
+                }
+                else{
+                    printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
+                    van_e = true;
+                }
+            }
         }
         case 3: {
             listat_kiir(lista.o_lista, lista.meret );
-            //osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
             break;
         }
         case 4:
             fomenu();
-        default:
-            almenu_osszetevo();
-            break;
     }
     osszetevot_fajlba_ir(lista);
     osszetevot_felszabadit(lista.o_lista,lista.meret);
@@ -101,13 +114,36 @@ void almenu_osszetevo(){
 void almenu_uj(){
     Recept *eleje = NULL;
     recept_lista(&eleje);
+    Osszetevo lista = osszetevo_lista();
     int valasztas;
     printf(" Van e új összetevő?");
     printf("\n 1. Van \n 2. Nincs \n 3. Nem tudom\n 4. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
+    if(0 > valasztas || valasztas > 5){
+        printf("Hibás index!\n");
+        osszetevot_felszabadit(lista.o_lista,lista.meret);
+        receptet_felszabadit(&eleje);
+             return;
+    }
     switch(valasztas){
         case 1:{
-            receptet_listaz(&eleje);
+            bool van_e = true;
+            do{
+                char valasz[5];
+                printf("Van még új összetevő?");
+                scanf("%s",valasz);
+                if(valaszt_tesztel(valasz)  == 1){
+                    uj_osszetevo(&lista,lista.meret);
+                    lista.meret++;
+                }
+                else if(valaszt_tesztel(valasz) == 0) {
+                    van_e = false;
+                }
+                else{
+                printf("\nIsmeretlen választás kérlek az igen/nem szavakat vagy I/H betut adj meg\n");
+                van_e = true;
+                }
+            }while(van_e);
             break;
         }
         case 2:{
@@ -130,16 +166,14 @@ void almenu_uj(){
             break;
         }
         case 3:{
-            Osszetevo lista = osszetevo_lista();
             listat_kiir(lista.o_lista, lista.meret);
-            //osszetevot_felszabadit(lista,sorokat_szamol("osszetevok.txt"));
             break;
         }
         case 4:
             fomenu();
-        default:
-            break;
     }
+    osszetevot_fajlba_ir(lista);
+    osszetevot_felszabadit(lista.o_lista,lista.meret);
     receptet_fajlba_ir(&eleje);
     receptet_felszabadit(&eleje);
 }
@@ -152,6 +186,11 @@ void almenu_recept(){
     int valasz;
     printf("\n 1. Recept módosítása \n 2. Recept törlése \n 3. Receptek listázása \n 4. Visszalépés..... \n Választás:");
     scanf("%d", &valasztas);
+    if(0 > valasztas || valasztas > 5){
+        printf("Hibás index!\n");
+        receptet_felszabadit(&eleje);
+        return;
+    }
     switch(valasztas){
         case 1:
             printf("Melyik receptet szeretnéd módosítani?\n");
@@ -162,7 +201,7 @@ void almenu_recept(){
                 recept_modosit(&eleje,valasz);
             }
             else{
-                printf("Hibás index!");
+                printf("Hibás index!\n");
                 fomenu();
             }
             break;
@@ -184,15 +223,12 @@ void almenu_recept(){
             }
             break;
         case 3:{
-            int receptek_szama = receptet_listaz(&eleje);
+            receptet_listaz(&eleje);
             printf("\nTárolt receptek száma:%d \n",receptek_szama);
             break;
         }
         case 4:
             fomenu();
-            break;
-        default:
-            almenu_recept();
             break;
     }
     receptet_fajlba_ir(&eleje);
@@ -204,8 +240,13 @@ void almenu_keres(){
     recept_lista(&eleje);
     int recept_szam = recept_szamolo(&eleje);
     int valasztas;
-    printf("\n 1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... \n Választás:");
+    printf("\n 1. Nincs ötletem \n 2. De innék egy kis.... \n 3. El kell használni.... 4. Visszalépés \n Választás:");
     scanf("%d", &valasztas);
+    if(0 > valasztas || valasztas > 5){
+        printf("Hibás index!\n");
+        receptet_felszabadit(&eleje);
+        return;
+    }
     switch(valasztas){
         case 1:
             //nincs_otlet();
@@ -216,8 +257,8 @@ void almenu_keres(){
         case 3:
             el_kell_hasznalni(&eleje,recept_szam);
             break;
-        default:
-            almenu_keres();
+        case 4:
+            fomenu();
             break;
     }
     receptet_felszabadit(&eleje);

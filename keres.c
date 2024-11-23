@@ -37,7 +37,8 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     char keres[52];
     Recept *utolso = *eleje;
     printf("Mit szeretnél ma inni?");
-    scanf("%s",keres);
+    fflush(stdin);
+    fgets(keres,52,stdin);
     while(utolso->kov != NULL){
         if(van_e_benne(utolso->o_lista,utolso->o_meret,keres) == true){
             strcpy(van_benne[k++],utolso->nev);
@@ -91,6 +92,10 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     int mennyit;
     printf("Hány összetevőt keresünk?");
     scanf("%d", &mennyit);
+    if (0 > mennyit || mennyit > 18446744073709551615){
+        printf("Hibás index!");
+        return;
+    }
     if(mennyit <0){
         printf("Hibás index!");
         osszetevot_felszabadit(van_benne,recept_szam);
@@ -110,7 +115,8 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     }
     for(int i=0;i<mennyit;i++){
         printf("Add meg az %d. keresett összetevőt:",i+1);
-        scanf("%s",keres[i]);
+        fflush(stdin);
+    fgets(keres[i],52,stdin);
     }
     Recept *utolso = *eleje;
     while(utolso->kov != NULL){
