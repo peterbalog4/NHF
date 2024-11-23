@@ -20,6 +20,9 @@ void almenu_keres(void);
 
 // A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér majd vissza.
 void fomenu(void){
+    #ifdef _WIN32
+    system("cls");
+    #endif
     int valasztas;
     printf("NHF | Koktéloskönyv\n");
     printf("\n 1. Összetevõk \n 2. Új koktélrecept felvétele \n 3. Receptek \n 4. Keresés \n 5. Kilépés.... \n Választás:");
@@ -263,7 +266,7 @@ void almenu_keres(){
             el_kell_hasznalni(&eleje,recept_szam);
             break;
         case 4:
-            //nev_szerint();
+            nev_szerint(&eleje);
             break;
         case 5:
             fomenu();

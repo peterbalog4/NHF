@@ -1,2 +1,4 @@
+sor
+bor
 rum
-s
+sor

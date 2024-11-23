@@ -67,6 +67,7 @@ char **ures_lista(int meret, int charsize){
 
 // Kiírja egy lista összes elemét.
 void listat_kiir(char **lista, int meret){
+    printf("Ismert összetevők:\n");
     for(int i=0; i<meret;i++){
         printf("\n %d. %s",i+1,lista[i]);
     }

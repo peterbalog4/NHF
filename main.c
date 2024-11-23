@@ -15,5 +15,4 @@ int main(void){
     system("chcp 65001 >nul");
     fomenu();
     return 0;
-
 }

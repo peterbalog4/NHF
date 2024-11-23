@@ -8,6 +8,8 @@
 #include "uf.h"
 #include "debugmalloc.h"
 #include "recept.h"
+#include "menu.h"
+#include <time.h>
 
 //Megnézi, hogy az adott receptben megtalálható e a keresett elem
 bool van_e_benne(char** o_lista,int o_meret,char *keres){
@@ -191,4 +193,21 @@ void nincs_otlet(Recept **eleje,int receptek_szama){
             van_e = true;
         }
     }
+}
+
+void nev_szerint(Recept **eleje){
+    char keres[52];
+    printf("Add meg a keresett recept nevét!");
+    fflush(stdin);
+    fgets(keres,52,stdin);
+    keres[strcspn(keres, "\n")] = '\0';
+    Recept *utolso = *eleje;
+    while(utolso->kov != NULL){
+        if(strcmp(utolso->nev,keres) == 0){
+            receptet_kiir(utolso);
+            return;
+        }
+        utolso = utolso->kov;
+    }
+    printf("Nincs ilyen recept!\n");
 }

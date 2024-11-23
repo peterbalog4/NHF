@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <wchar.h>
+#include <locale.h>
 #include "uf.h"
 #include "debugmalloc.h"
 

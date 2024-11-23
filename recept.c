@@ -7,7 +7,7 @@
 
 // A recepteket tároló láncolt lista struktúrája.
 typedef struct Recept{
-    char nev[51];
+    char nev[52];
     char **o_lista;
     int o_meret;
     char **ml;
@@ -15,6 +15,27 @@ typedef struct Recept{
     int el_meret;
     struct Recept *kov;
 } Recept;
+
+// Felszabadítja a recepteket tároló láncolt listát. Megjegyzés: Feltűnő lehet, hogy az NHF-ben magyar kifejezéseket használok, itt
+// pedig a temp angol kifejezést. A kódot nem plagizáltam, csupán a magyar "időleges" vagy "eseti" nagyon furán használható/értelmezhető.
+void receptet_felszabadit(Recept **eleje){
+    Recept *temp;
+    while (*eleje != NULL) {
+        temp = *eleje;
+        *eleje = (*eleje)->kov;
+
+        osszetevot_felszabadit(temp->el_lista, temp->el_meret);
+        osszetevot_felszabadit(temp->o_lista, temp->o_meret);
+
+        for (int i = 0; i < temp->o_meret; i++) {
+            free(temp->ml[i]);
+        }
+        free(temp->ml);
+
+        free(temp);
+
+    }
+}
 
 //Hozzáad egy új receptet a recepteket tároló láncolt listához.
 void uj_recept(Recept **eleje){
@@ -69,11 +90,16 @@ void uj_recept(Recept **eleje){
         for(int i=0;i < o_meret;i++){
             printf("Választás:");
             scanf("%d",&valasz);
-            //Hibakezelés!!
+            if(0 > valasz || valasz > lista.meret){
+                printf("Hibás index!");
+                return;
+            }
             lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
             strcpy(uj->o_lista[i],lista.o_lista[valasz-1]);
             printf("Hány ml-t?");
-            scanf("%s", uj->ml[i]);
+            fflush(stdin);
+            fgets(uj->ml[i],52,stdin);
+            uj->ml[i][strcspn(uj->ml[i], "\n")] = '\0';
         }
     }
     else{
@@ -144,12 +170,15 @@ void uj_recept(Recept **eleje){
 void receptet_kiir(Recept *recept){
     if (recept != NULL) {
         printf("Név: %s\n", recept->nev);
+        printf("-------------------------\n");
         printf("Összetevők: \n");
         for(int i=0;i<recept->o_meret;i++){
             printf("%s %s ml \n",recept->o_lista[i],recept->ml[i]);
         }
+        printf("-------------------------\n");
         printf("Elkészítési leírás: \n");
         for(int i=0;i<recept->el_meret;i++){
+            printf("\n %d. lépés:\n",i+1);
             printf("%s \n",recept->el_lista[i]);
         }
     }
@@ -160,11 +189,15 @@ void receptet_fajlba_ir(Recept **eleje){
     FILE *fp;
     Recept *utolso = *eleje;
     fp = fopen("receptek.txt","w");
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+        return;
+    }
     if(utolso->kov != NULL){
         do{
             fprintf(fp,"%s;", utolso->nev);
             for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
+                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
             }
             fprintf(fp,";");
             for(int i=0;i<utolso->el_meret;i++){
@@ -176,7 +209,7 @@ void receptet_fajlba_ir(Recept **eleje){
         }while(utolso->kov != NULL);
             fprintf(fp,"%s;", utolso->nev);
             for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
+                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
             }
             fprintf(fp,";");
             for(int i=0;i<utolso->el_meret;i++){
@@ -188,7 +221,7 @@ void receptet_fajlba_ir(Recept **eleje){
     else{
         fprintf(fp,"%s;", utolso->nev);
         for(int i=0;i<utolso->o_meret;i++){
-            fprintf(fp,"%s,%d?",utolso->o_lista[i],*(utolso->ml[i]));
+            fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
         }
         fprintf(fp,";");
         for(int i=0;i<utolso->el_meret;i++){
@@ -199,26 +232,7 @@ void receptet_fajlba_ir(Recept **eleje){
     }
 }
 
-// Felszabadítja a recepteket tároló láncolt listát. Megjegyzés: Feltűnő lehet, hogy az NHF-ben magyar kifejezéseket használok, itt
-// pedig a temp angol kifejezést. A kódot nem plagizáltam, csupán a magyar "időleges" vagy "eseti" nagyon furán használható/értelmezhető.
-void receptet_felszabadit(Recept **eleje){
-    Recept *temp;
-    while (*eleje != NULL) {
-        temp = *eleje;
-        *eleje = (*eleje)->kov;
 
-        osszetevot_felszabadit(temp->el_lista, temp->el_meret);
-        osszetevot_felszabadit(temp->o_lista, temp->o_meret);
-
-        for (int i = 0; i < temp->o_meret; i++) {
-            free(temp->ml[i]);
-        }
-        free(temp->ml);
-
-        free(temp);
-
-    }
-}
 // Megjegyzés: A lenti függvényt "összefoltoztam". Néhány trükköt, például a tokenezést és az strtok() függvényt az internetről tanultam, néhány ötlet pedig
 // a sajátom. A függvény nem copy-paste, de nem teljesen a Prog1 tananyagra épül.
 // string = A használt string, stop = A delimiter karakter, esetünkben a ; | ? | ,
@@ -247,6 +261,10 @@ char** elvalaszt(const char* string, const char* stop, int* hossz) {
 //és ipari mennyiségű kávé eredménye.
 void recept_lista(Recept **eleje){
     FILE *fp = fopen("receptek.txt", "r");
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+        return;
+    }
 
     char sor[256];
     while (fgets(sor, sizeof(sor), fp)) {
@@ -342,13 +360,15 @@ void receptet_listaz(Recept **eleje){
     Recept *utolso = *eleje;
     int szamolo=1;
     while(utolso->kov != NULL){
-        printf("%d.",szamolo);
+        printf("%d. koktél\n",szamolo);
         receptet_kiir(utolso);
+        printf("\n\n___________________________\n\n");
         utolso = utolso->kov;
         szamolo++;
     }
-    printf("%d.",szamolo);
+    printf("%d.koktél\n",szamolo);
     receptet_kiir(utolso);
+    printf("\n\n___________________________\n\n");
     return szamolo;
 }
 
@@ -436,13 +456,13 @@ void recept_modosit(Recept **eleje,int mennyi){
                 }
             }
 
-            utolso->ml = malloc(o_meret*sizeof(int *));
+            utolso->ml = malloc(o_meret*sizeof(char *));
             if (utolso->ml == NULL){
                 printf("Memóriafoglalási hiba!");
                 exit(7);
             }
             for(int i=0;i<o_meret;i++){
-                utolso->ml[i] = malloc(sizeof(int));
+                utolso->ml[i] = malloc(52 *sizeof(char));
                 if (utolso->ml[i] == NULL){
                     printf("Memóriafoglalási hiba!");
                     exit(8);
@@ -458,6 +478,7 @@ void recept_modosit(Recept **eleje,int mennyi){
                     printf("Hány ml-t?");
                     fflush(stdin);
                     fgets(utolso->ml[i],52,stdin);
+                    utolso->ml[i][strcspn(utolso->ml[i], "\n")] = '\0';
                 }
             }
             else{
@@ -465,7 +486,6 @@ void recept_modosit(Recept **eleje,int mennyi){
             }
             utolso->o_meret = o_meret;
             osszetevot_felszabadit(lista.o_lista,lista.meret);
-            free(lista.meret);
             break;
         }
         case 3:{
