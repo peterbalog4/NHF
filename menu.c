@@ -1,22 +1,16 @@
-// NTS: Meg kell oldani, hogy ki lehessen lépni az exit szóval. + a program csak akkor álljon le ha a főmenüben exitet kap.
-// NTS: Láncolt lista az összetevőkhöz!!!
-
-// Megjegyzés: 1. A program egyelőre nem ciklikus. Azaz mindig leáll. Ez a kész NHF-ban már javítva lesz és csak akkor áll majd le a program, ha exit kulcszót kap.
-// 2. Az elmentett uj osszetevők csak a program bezárásakor kerülnek bele a fájlba. Emiatt ha a 2.1 meüben új összetevőt adunk meg, az nem lesz használható. Ezt úgy tervezem javítani, hogy nem a fájlba fog írogatni az uj_osszetevo
-// függvény, hanem egy a fájlból átvett listába. Ezt idő hiányában nem tudom határidőre kivitelezni, ezért csak a kész NHF-ba fog bekerülni.
-
 #include <stdio.h>
 #include <stdbool.h>
 #include "osszetevok.h"
-#include "uf.h"
 #include "recept.h"
+#include "uf.h"
 #include "debugmalloc.h"
 #include "keres.h"
 
+
 void almenu_osszetevo();
 void almenu_uj();
-void almenu_recept(void);
-void almenu_keres(void);
+void almenu_recept();
+void almenu_keres();
 
 // A főmenü függvény. A felhasználó innen kezdi a navigációját és ide tér majd vissza.
 void fomenu(void){
@@ -94,7 +88,6 @@ void almenu_osszetevo(){
                 scanf("%5s",valasz);
                 if(valaszt_tesztel(valasz) == 1){
                     osszetevot_torol(&lista,lista.meret);
-                    lista.meret--;
                     van_e =true;
                 }
                 else if (valaszt_tesztel(valasz) == 0) {
@@ -185,7 +178,7 @@ void almenu_uj(){
     receptet_fajlba_ir(&eleje);
     receptet_felszabadit(&eleje);
 }
-// Innen elérhetőek a recept kezelő függvények. Megjegyzés: kész
+// Innen elérhetőek a recept kezelő függvények.
 void almenu_recept(){
     Recept *eleje = NULL;
     recept_lista(&eleje);
@@ -213,23 +206,44 @@ void almenu_recept(){
                 fomenu();
             }
             break;
-        case 2:
-            if(receptek_szama == 1){
+        case 2:{
+            char valasz2[5];
+            bool van_e = true;
+            while(van_e){
+                receptek_szama = recept_szamolo(&eleje);
+                if(receptek_szama == 1){
                 printf("Az utolsó receptet nem lehet törölni!\n");
                 break;
-            }
-            printf("Melyik receptet szeretnéd törölni?\n");
-            receptet_listaz(&eleje);
-            printf("\nVálasztás:");
-            scanf("%d",&valasz);
-            if(0 < valasz && valasz <= receptek_szama){
-                recept_torol(&eleje,valasz);
-            }
-            else{
-                printf("Hibás index!");
-                fomenu();
+                }
+                printf("Van még törlendő elem?");
+                scanf("%5s",valasz2);
+                if(valaszt_tesztel(valasz2) == 1){
+                    printf("Melyik receptet szeretnéd törölni?\n");
+                    receptet_listaz(&eleje);
+                    printf("\nVálasztás:");
+                    scanf("%d",&valasz);
+                    if(0 < valasz && valasz <= receptek_szama){
+                        recept_torol(&eleje,valasz);
+                        van_e =true;
+                    }
+                    else{
+                        printf("Hibás index!");
+                        fomenu();
+                    }
+                }
+                else if (valaszt_tesztel(valasz2) == 0) {
+                    van_e = false;
+                    break;
+                }
+                else{
+                    printf("\nIsmeretlen valasztas kerlek az igen/nem szavakat vagy I/H betut adj meg\n");
+                    van_e = true;
+                }
+
+
             }
             break;
+        }
         case 3:{
             receptet_listaz(&eleje);
             printf("\nTárolt receptek száma:%d \n",receptek_szama);
@@ -242,7 +256,7 @@ void almenu_recept(){
     receptet_fajlba_ir(&eleje);
     receptet_felszabadit(&eleje);
 }
-// Innen lesznek elérhetőek a kereső függvények. Megjegyzés: Még fejlesuztés alatt.
+// Innen érhetőek el a kereső függvények.
 void almenu_keres(){
     Recept *eleje = NULL;
     recept_lista(&eleje);

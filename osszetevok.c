@@ -2,20 +2,15 @@
 // 1. Minden összetevő sztring 52 méretű. A felhasználónak 50 karakter lett "megígérve". A sorokat_szamol függvényem \n karaktereket számol így ez kell,hogy
 // minden sztring végén ott legyen. Így a lezáró nullával együtt minden összetevő sztring 50+1+1 méretű.
 // 2. A segédfüggvények az uf.c fájlban vannak.
-// 3. Az összetevő fuggvenyek(uj_osszetevo,osszetevo_lista,osszetevot_torol) jelenleg jól működnek. Viszont vannak dolgok benne amin szeretnék változtatni. Például amit laboron beszéltünk, a sok
-// felesleges fájlnyitogatás. A végleges verzióban a modul és a kód funkcionalitása nem fog változni, de bizonyos dolgokat szeretnék "okosabban" megoldani.
-//structot csinálni!!!!!
 
-// NTS: Fájlkezelést javítani!!! || Fájlt az elején beolvassa, végén fájlba ír.
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include <wchar.h>
-#include <locale.h>
 #include "uf.h"
 #include "debugmalloc.h"
 
+//Az összetevőket tároló DinTömb.
 typedef struct Osszetevo{
     char **o_lista;
     int meret;
@@ -117,13 +112,14 @@ void osszetevot_torol(Osszetevo *lista,int meret){
     }
     printf("Az összetevő sorszámának megadásával válaszd ki a törölni kívánt elemet: \n");
     printf("Választás:");
+    fflush(stdin);
     scanf("%d",&valasztas);
+
     if(valasztas>meret || valasztas < 0){
-        printf("Nem megfelelő számot adtál meg!");
-        printf("Választás:");
-        scanf("%d",&valasztas);
+        printf("Nem megfelelő számot adtál meg!\n");
+
     }
-    else{
+    if(valasztas<=meret && valasztas > 0){
         char **temp;
         temp = malloc(meret*sizeof(char *));
         if(temp == NULL){
@@ -165,7 +161,10 @@ void osszetevot_torol(Osszetevo *lista,int meret){
             }
         }
 
+        lista->meret--;
         osszetevot_felszabadit(temp,meret);
 
     }
+    else
+        printf("Hibás bemenet!");
 }

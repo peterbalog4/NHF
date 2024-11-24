@@ -1,3 +1,7 @@
+//Megjegyzés: Feltűnő lehet, hogy az NHF-ben magyar kifejezéseket használok, itt pedig a temp angol kifejezést.
+//A kódot nem plagizáltam, csupán a magyar "időleges" vagy "eseti" nagyon furán használható/értelmezhető.
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -16,8 +20,7 @@ typedef struct Recept{
     struct Recept *kov;
 } Recept;
 
-// Felszabadítja a recepteket tároló láncolt listát. Megjegyzés: Feltűnő lehet, hogy az NHF-ben magyar kifejezéseket használok, itt
-// pedig a temp angol kifejezést. A kódot nem plagizáltam, csupán a magyar "időleges" vagy "eseti" nagyon furán használható/értelmezhető.
+// Felszabadítja a recepteket tároló láncolt listát.
 void receptet_felszabadit(Recept **eleje){
     Recept *temp;
     while (*eleje != NULL) {

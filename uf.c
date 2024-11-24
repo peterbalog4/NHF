@@ -1,8 +1,5 @@
 //Megjegyzések: Ez az univerzális függvénykönyvtáram. Olyan kicsi függvények amiket a NHF szinte összes moduljában használok, ezért összegyûjtöttem egy helyre.
 
-// Ez a függvény sorokat számol. Az összetevőket és a recepteket tartozó fájlok sorszámolására használom.
-// Az uj_osszetevo fuggveny es az uj_recept fuggveny minden sor végére rak egy \n karaktert így pontosan számol a függvény.
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -10,6 +7,8 @@
 #include "recept.h"
 #include "osszetevok.h"
 
+// Ez a függvény sorokat számol. Az összetevőket és a recepteket tartozó fájlok sorszámolására használom.
+// Az uj_osszetevo fuggveny es az uj_recept fuggveny minden sor végére rak egy \n karaktert így pontosan számol a függvény.
  int sorokat_szamol(char *fajl){
     FILE *fp;
     fp = fopen(fajl,"r");

@@ -26,6 +26,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     char **van_benne;
     int valasz;
     int k=0,szamolo=0;
+
     van_benne = malloc(recept_szam*sizeof(char *));
     if (van_benne == NULL){
         printf("Memóriafoglalási hiba!");
@@ -43,6 +44,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     printf("Mit szeretnél ma inni?");
     fflush(stdin);
     fgets(keres,52,stdin);
+
     while(utolso->kov != NULL){
         if(van_e_benne(utolso->o_lista,utolso->o_meret,keres) == true){
             strcpy(van_benne[k++],utolso->nev);
@@ -50,6 +52,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
         }
         utolso = utolso->kov;
     }
+
     if(szamolo == 0){
         printf("Nincs ilyen recept!\n");
         osszetevot_felszabadit(van_benne,recept_szam);
@@ -58,6 +61,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     for(int i=0;i<szamolo;i++){
         printf("%d. %s\n",i+1,van_benne[i]);
     }
+
     printf("Ezekben a receptekben van %s, melyiket szeretnéd elkészíteni? \n Választás:",keres);
     scanf("%d",&valasz);
     valasz--;
@@ -80,6 +84,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     char **van_benne;
     int valasz;
     int k=0,szamolo=0,szamolo2=0;
+
     van_benne = malloc(recept_szam*sizeof(char *));
     if (van_benne == NULL){
         printf("Memóriafoglalási hiba!");
@@ -92,10 +97,12 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
             return;
         }
     }
+
     char **keres;
     int mennyit;
     printf("Hány összetevőt keresünk?");
     scanf("%d", &mennyit);
+
     if (0 > mennyit || mennyit > 9223372036854775807){
         printf("Hibás index!");
         return;
@@ -105,6 +112,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
         osszetevot_felszabadit(van_benne,recept_szam);
         return;
     }
+
     keres = malloc(mennyit*sizeof(char *));
     if (keres == NULL){
         printf("Memóriafoglalási hiba!");
@@ -117,11 +125,13 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
             return;
         }
     }
+
     for(int i=0;i<mennyit;i++){
         printf("Add meg az %d. keresett összetevőt:",i+1);
         fflush(stdin);
-    fgets(keres[i],52,stdin);
+        fgets(keres[i],52,stdin);
     }
+
     Recept *utolso = *eleje;
     while(utolso->kov != NULL){
         for(int i=0;i<mennyit;i++){
@@ -158,6 +168,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
         printf("Hibás index!");
         fomenu();
     }
+
     osszetevot_felszabadit(van_benne,recept_szam);
     osszetevot_felszabadit(keres,mennyit);
 
@@ -173,14 +184,17 @@ void nincs_otlet(Recept **eleje,int receptek_szama){
     char valasz[5];
     Recept *utolso = *eleje;
     int szamolo = 1;
+
     while(szamolo != r){
         utolso = utolso->kov;
         szamolo++;
     }
+
     receptet_kiir(utolso);
     printf("Ez a recept megfelelő?");
     scanf("%5s",valasz);
     bool van_e =true;
+
     while(van_e){
         if (valaszt_tesztel(valasz) == 1){
             return;
