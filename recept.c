@@ -26,11 +26,7 @@ void receptet_felszabadit(Recept **eleje){
 
         osszetevot_felszabadit(temp->el_lista, temp->el_meret);
         osszetevot_felszabadit(temp->o_lista, temp->o_meret);
-
-        for (int i = 0; i < temp->o_meret; i++) {
-            free(temp->ml[i]);
-        }
-        free(temp->ml);
+        osszetevot_felszabadit(temp->ml, temp->o_meret);
 
         free(temp);
 
@@ -44,7 +40,7 @@ void receptet_kiir(Recept *recept){
         printf("-------------------------\n");
         printf("Összetevők: \n");
         for(int i=0;i<recept->o_meret;i++){
-            printf("%s %s ml \n",recept->o_lista[i],recept->ml[i]);
+            printf("%s %s \n",recept->o_lista[i],recept->ml[i]);
         }
         printf("-------------------------\n");
         printf("Elkészítési leírás: \n");
@@ -155,13 +151,13 @@ void uj_recept(Recept **eleje){
         }
     }
 
-    uj->ml = malloc(o_meret*sizeof(int *));
+    uj->ml = malloc(o_meret*sizeof(char *));
     if (uj->ml == NULL){
         printf("Memóriafoglalási hiba!");
         exit(7);
     }
     for(int i=0;i<o_meret;i++){
-        uj->ml[i] = malloc(sizeof(int));
+        uj->ml[i] = malloc(52 *sizeof(char));
         if (uj->ml[i] == NULL){
             printf("Memóriafoglalási hiba!");
             exit(8);
@@ -179,7 +175,7 @@ void uj_recept(Recept **eleje){
             }
             lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
             strcpy(uj->o_lista[i],lista.o_lista[valasz-1]);
-            printf("Hány ml-t?");
+            printf("Mennyi kell belőle?");
             fflush(stdin);
             fgets(uj->ml[i],52,stdin);
             uj->ml[i][strcspn(uj->ml[i], "\n")] = '\0';
@@ -474,7 +470,7 @@ void recept_modosit(Recept **eleje,int mennyi){
                     scanf("%d",&valasz);
                     lista.o_lista[valasz-1][strcspn(lista.o_lista[valasz-1], "\n")] = '\0';
                     strcpy(utolso->o_lista[i],lista.o_lista[valasz-1]);
-                    printf("Hány ml-t?");
+                    printf("Mennyi kell belőle?");
                     fflush(stdin);
                     fgets(utolso->ml[i],52,stdin);
                     utolso->ml[i][strcspn(utolso->ml[i], "\n")] = '\0';

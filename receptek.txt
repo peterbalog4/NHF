@@ -11,3 +11,8 @@ Gyumolcs koktel10;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add ho
 Gyumolcs koktel11;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
 Gyumolcs koktel12;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
 Gyumolcs koktel13;alma,53?korte,53?narancsle,53?;turmixold ossze az almat?add hozza a kortet?onts hozza 40ml narancslevet?;
+gin;sor,50 ml?rum,5 db?;1?2?3?;
+gin;sor,500 ml?sor,2 db?;1?2?;
+gin;bor,2 db?rum,500 ml?;1?2?;
+gin;sor,2 db?rum,500 ml?;1?;
+gin;bor,2 db?rum,500 ml?;n?;
