@@ -92,18 +92,15 @@ Osszetevo osszetevo_lista(){
     fp = fopen("osszetevok.txt","r");
     if (fp == NULL) {
         printf("Fájlkezelési hiba! \n");
-        return;
     }
     lista.o_lista = malloc(lista.meret*sizeof(char *));
     if (lista.o_lista == NULL){
         printf("Memóriafoglalási hiba!");
-        return;
     }
     for(int i=0;i<lista.meret;i++){
         lista.o_lista[i] = malloc(52 * sizeof(char));
         if (lista.o_lista[i] == NULL){
             printf("Memóriafoglalási hiba!");
-            return;
         }
         fgets(lista.o_lista[i],52,fp);
 

@@ -37,6 +37,89 @@ void receptet_felszabadit(Recept **eleje){
     }
 }
 
+//Kiír egy konkrét receptet.
+void receptet_kiir(Recept *recept){
+    if (recept != NULL) {
+        printf("Név: %s\n", recept->nev);
+        printf("-------------------------\n");
+        printf("Összetevők: \n");
+        for(int i=0;i<recept->o_meret;i++){
+            printf("%s %s ml \n",recept->o_lista[i],recept->ml[i]);
+        }
+        printf("-------------------------\n");
+        printf("Elkészítési leírás: \n");
+        for(int i=0;i<recept->el_meret;i++){
+            printf("\n %d. lépés:\n",i+1);
+            printf("%s \n",recept->el_lista[i]);
+        }
+    }
+}
+
+//Ez a függvény a teljes recepteket tároló láncolt listát kiírja a képernyőre.
+void receptet_listaz(Recept **eleje){
+    Recept *utolso = *eleje;
+    int szamolo=1;
+    while(utolso->kov != NULL){
+        printf("%d. koktél\n",szamolo);
+        receptet_kiir(utolso);
+        printf("\n\n___________________________\n\n");
+        utolso = utolso->kov;
+        szamolo++;
+    }
+    printf("%d.koktél\n",szamolo);
+    receptet_kiir(utolso);
+    printf("\n\n___________________________\n\n");
+}
+
+
+//A recepteket tároló láncolt listát fájlba írja.
+void receptet_fajlba_ir(Recept **eleje){
+    FILE *fp;
+    Recept *utolso = *eleje;
+    fp = fopen("receptek.txt","w");
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+        return;
+    }
+    if(utolso->kov != NULL){
+        do{
+            fprintf(fp,"%s;", utolso->nev);
+            for(int i=0;i<utolso->o_meret;i++){
+                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
+            }
+            fprintf(fp,";");
+            for(int i=0;i<utolso->el_meret;i++){
+                fprintf(fp,"%s?",utolso->el_lista[i]);
+            }
+            fprintf(fp,";");
+            fprintf(fp,"\n");
+            utolso = utolso->kov;
+        }while(utolso->kov != NULL);
+            fprintf(fp,"%s;", utolso->nev);
+            for(int i=0;i<utolso->o_meret;i++){
+                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
+            }
+            fprintf(fp,";");
+            for(int i=0;i<utolso->el_meret;i++){
+                fprintf(fp,"%s?",utolso->el_lista[i]);
+            }
+            fprintf(fp,";");
+            fprintf(fp,"\n");
+    }
+    else{
+        fprintf(fp,"%s;", utolso->nev);
+        for(int i=0;i<utolso->o_meret;i++){
+            fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
+        }
+        fprintf(fp,";");
+        for(int i=0;i<utolso->el_meret;i++){
+            fprintf(fp,"%s?",utolso->el_lista[i]);
+        }
+        fprintf(fp,";");
+        fprintf(fp,"\n");
+    }
+}
+
 //Hozzáad egy új receptet a recepteket tároló láncolt listához.
 void uj_recept(Recept **eleje){
     Recept *uj = (Recept*)malloc(sizeof(Recept));
@@ -50,7 +133,7 @@ void uj_recept(Recept **eleje){
     int o_meret,valasz;
     printf("Hány összetevő legyen?");
     scanf("%d", &o_meret);
-    if (0 > o_meret || o_meret > 18446744073709551615){
+    if (0 > o_meret || o_meret > 9223372036854775807){
         printf("Hibás index!");
         return;
     }
@@ -110,7 +193,7 @@ void uj_recept(Recept **eleje){
 
     printf("Hány lépés legyen az elkészítési leírás?");
     scanf("%d",&el_meret);
-    if (0 > el_meret || el_meret > 18446744073709551615){
+    if (0 > el_meret || el_meret > 9223372036854775807){
         printf("Hibás index!");
         return;
     }
@@ -136,7 +219,7 @@ void uj_recept(Recept **eleje){
             uj->el_lista[i][strcspn(uj->el_lista[i], "\n")] = '\0';
             if(strcmp(uj->el_lista[i],"\n") == 0){
                 printf("Hibás bemenet!");
-                receptet_felszabadit(&eleje);
+                receptet_felszabadit(eleje);
                 exit(9);
             }
         }
@@ -165,73 +248,6 @@ void uj_recept(Recept **eleje){
         return;
     }
 }
-
-//Kiír egy konkrét receptet.
-void receptet_kiir(Recept *recept){
-    if (recept != NULL) {
-        printf("Név: %s\n", recept->nev);
-        printf("-------------------------\n");
-        printf("Összetevők: \n");
-        for(int i=0;i<recept->o_meret;i++){
-            printf("%s %s ml \n",recept->o_lista[i],recept->ml[i]);
-        }
-        printf("-------------------------\n");
-        printf("Elkészítési leírás: \n");
-        for(int i=0;i<recept->el_meret;i++){
-            printf("\n %d. lépés:\n",i+1);
-            printf("%s \n",recept->el_lista[i]);
-        }
-    }
-}
-
-//A recepteket tároló láncolt listát fájlba írja.
-void receptet_fajlba_ir(Recept **eleje){
-    FILE *fp;
-    Recept *utolso = *eleje;
-    fp = fopen("receptek.txt","w");
-    if (fp == NULL) {
-        printf("Fájlkezelési hiba! \n");
-        return;
-    }
-    if(utolso->kov != NULL){
-        do{
-            fprintf(fp,"%s;", utolso->nev);
-            for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
-            }
-            fprintf(fp,";");
-            for(int i=0;i<utolso->el_meret;i++){
-                fprintf(fp,"%s?",utolso->el_lista[i]);
-            }
-            fprintf(fp,";");
-            fprintf(fp,"\n");
-            utolso = utolso->kov;
-        }while(utolso->kov != NULL);
-            fprintf(fp,"%s;", utolso->nev);
-            for(int i=0;i<utolso->o_meret;i++){
-                fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
-            }
-            fprintf(fp,";");
-            for(int i=0;i<utolso->el_meret;i++){
-                fprintf(fp,"%s?",utolso->el_lista[i]);
-            }
-            fprintf(fp,";");
-            fprintf(fp,"\n");
-    }
-    else{
-        fprintf(fp,"%s;", utolso->nev);
-        for(int i=0;i<utolso->o_meret;i++){
-            fprintf(fp,"%s,%s?",utolso->o_lista[i],utolso->ml[i]);
-        }
-        fprintf(fp,";");
-        for(int i=0;i<utolso->el_meret;i++){
-            fprintf(fp,"%s?",utolso->el_lista[i]);
-        }
-        fprintf(fp,";");
-        fprintf(fp,"\n");
-    }
-}
-
 
 // Megjegyzés: A lenti függvényt "összefoltoztam". Néhány trükköt, például a tokenezést és az strtok() függvényt az internetről tanultam, néhány ötlet pedig
 // a sajátom. A függvény nem copy-paste, de nem teljesen a Prog1 tananyagra épül.
@@ -355,23 +371,6 @@ void recept_lista(Recept **eleje){
     fclose(fp);
 }
 
-//Ez a függvény a teljes recepteket tároló láncolt listát kiírja a képernyőre.
-void receptet_listaz(Recept **eleje){
-    Recept *utolso = *eleje;
-    int szamolo=1;
-    while(utolso->kov != NULL){
-        printf("%d. koktél\n",szamolo);
-        receptet_kiir(utolso);
-        printf("\n\n___________________________\n\n");
-        utolso = utolso->kov;
-        szamolo++;
-    }
-    printf("%d.koktél\n",szamolo);
-    receptet_kiir(utolso);
-    printf("\n\n___________________________\n\n");
-    return szamolo;
-}
-
 // Ez a függvény eltávolít egy receptet a recepteket tároló láncolt listából.
 void recept_torol(Recept **eleje, int hanyadik){
     Recept *elozo = NULL, *temp = *eleje;
@@ -438,7 +437,7 @@ void recept_modosit(Recept **eleje,int mennyi){
             int o_meret;
             printf("Hány összetevő legyen?");
             scanf("%d", &o_meret);
-            if (0 > o_meret || o_meret > 18446744073709551615){
+            if (0 > o_meret || o_meret > 9223372036854775807){
                 printf("Hibás index!");
                 return;
             }
@@ -493,7 +492,7 @@ void recept_modosit(Recept **eleje,int mennyi){
             int el_meret;
             printf("Hány lépés legyen az elkészítési leírás?");
             scanf("%d",&el_meret);
-            if (0 > el_meret || el_meret > 18446744073709551615){
+            if (0 > el_meret || el_meret > 9223372036854775807){
                 printf("Hibás index!");
                 return;
             }
@@ -519,7 +518,7 @@ void recept_modosit(Recept **eleje,int mennyi){
                     fgets(temp,201,stdin);
                     if(strcmp(temp,"\n")== 0){
                         printf("Hibás bemenet!");
-                        receptet_felszabadit(&eleje);
+                        receptet_felszabadit(eleje);
                         exit(9);
                     }
                     else {

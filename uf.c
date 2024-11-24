@@ -45,25 +45,6 @@ int valaszt_tesztel(char *valasz){
 
 
 }
-// A függvény egy üres pointertömböt hoz létre amiben sztringeket tárolok. A meret adja meg a sztringek számát, a charsize adja meg,hogy a sztringek milyen hosszúak legyenek.
-char **ures_lista(int meret, int charsize){
-    char **lista;
-    lista = malloc(meret*sizeof(char *));
-    if (lista == NULL){
-        printf("Memóriafoglalási hiba!");
-        exit(1);
-        return NULL;
-    }
-    for(int i=0;i<meret;i++){
-        lista[i] = malloc(charsize * sizeof(char));
-        if (lista[i] == NULL){
-            printf("Memóriafoglalási hiba!");
-            exit(2);
-            return NULL;
-        }
-    }
-    return lista;
-}
 
 // Kiírja egy lista összes elemét.
 void listat_kiir(char **lista, int meret){
@@ -72,8 +53,4 @@ void listat_kiir(char **lista, int meret){
         printf("\n %d. %s",i+1,lista[i]);
     }
     printf("\n");
-}
-
-void uj_sort_torol(char *string) {
-    string[strcspn(string, "\n")] = '\0';
 }

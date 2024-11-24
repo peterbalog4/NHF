@@ -96,7 +96,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     int mennyit;
     printf("Hány összetevőt keresünk?");
     scanf("%d", &mennyit);
-    if (0 > mennyit || mennyit > 18446744073709551615){
+    if (0 > mennyit || mennyit > 9223372036854775807){
         printf("Hibás index!");
         return;
     }
@@ -164,6 +164,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
 
 }
 
+//Random sorsol egy receptet a felhasználónak, amit a felhasználó vagy elfogad vagy újat kér.
 void nincs_otlet(Recept **eleje,int receptek_szama){
     ide:
     srand(time(NULL));
@@ -195,6 +196,7 @@ void nincs_otlet(Recept **eleje,int receptek_szama){
     }
 }
 
+//A függvény név szerint keres a recepteket tároló láncolt listában.
 void nev_szerint(Recept **eleje){
     char keres[52];
     printf("Add meg a keresett recept nevét!");
