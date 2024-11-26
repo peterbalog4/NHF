@@ -104,8 +104,11 @@ void almenu_osszetevo(){
             listat_kiir(lista.o_lista, lista.meret );
             break;
         }
-        case 4:
-            fomenu();
+        case 4:{
+            osszetevot_fajlba_ir(lista);
+            osszetevot_felszabadit(lista.o_lista,lista.meret);
+            return;
+        }
     }
     osszetevot_fajlba_ir(lista);
     osszetevot_felszabadit(lista.o_lista,lista.meret);
@@ -170,8 +173,13 @@ void almenu_uj(){
             listat_kiir(lista.o_lista, lista.meret);
             break;
         }
-        case 4:
-            fomenu();
+        case 4:{
+            osszetevot_fajlba_ir(lista);
+            osszetevot_felszabadit(lista.o_lista,lista.meret);
+            receptet_fajlba_ir(&eleje);
+            receptet_felszabadit(&eleje);
+           return;
+        }
     }
     osszetevot_fajlba_ir(lista);
     osszetevot_felszabadit(lista.o_lista,lista.meret);
@@ -203,7 +211,7 @@ void almenu_recept(){
             }
             else{
                 printf("Hibás index!\n");
-                fomenu();
+                return;
             }
             break;
         case 2:{
@@ -249,9 +257,12 @@ void almenu_recept(){
             printf("\nTárolt receptek száma:%d \n",receptek_szama);
             break;
         }
-        case 4:
-            fomenu();
+        case 4:{
+            receptet_fajlba_ir(&eleje);
+            receptet_felszabadit(&eleje);
+            return;
             break;
+        }
     }
     receptet_fajlba_ir(&eleje);
     receptet_felszabadit(&eleje);
@@ -282,9 +293,12 @@ void almenu_keres(){
         case 4:
             nev_szerint(&eleje);
             break;
-        case 5:
-            fomenu();
+        case 5:{
+            receptet_fajlba_ir(&eleje);
+            receptet_felszabadit(&eleje);
+            return;
             break;
+        }
     }
     receptet_felszabadit(&eleje);
 }

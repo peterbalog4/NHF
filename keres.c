@@ -74,7 +74,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     }
     else{
         printf("Hibás index!");
-        fomenu();
+        return;
     }
     osszetevot_felszabadit(van_benne,recept_szam);
 }
@@ -166,7 +166,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     }
     else{
         printf("Hibás index!");
-        fomenu();
+        return;
     }
 
     osszetevot_felszabadit(van_benne,recept_szam);
