@@ -74,7 +74,7 @@ void innek_egy_kis(Recept **eleje,int recept_szam){
     }
     else{
         printf("Hibás index!");
-        return;
+        fomenu();
     }
     osszetevot_felszabadit(van_benne,recept_szam);
 }
@@ -103,7 +103,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     printf("Hány összetevőt keresünk?");
     scanf("%d", &mennyit);
 
-    if (0 > mennyit || mennyit > 9223372036854775807){
+    if (0 > mennyit){
         printf("Hibás index!");
         return;
     }
@@ -166,7 +166,7 @@ void el_kell_hasznalni(Recept **eleje,int recept_szam){
     }
     else{
         printf("Hibás index!");
-        return;
+        fomenu();
     }
 
     osszetevot_felszabadit(van_benne,recept_szam);
@@ -192,7 +192,7 @@ void nincs_otlet(Recept **eleje,int receptek_szama){
 
     receptet_kiir(utolso);
     printf("Ez a recept megfelelő?");
-    scanf("%5s",valasz);
+    scanf("%4s",valasz);
     bool van_e =true;
 
     while(van_e){

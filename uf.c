@@ -12,6 +12,9 @@
  int sorokat_szamol(char *fajl){
     FILE *fp;
     fp = fopen(fajl,"r");
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+    }
     char c;
     int sorszamolo = 0;
     while(fscanf(fp,"%c",&c) != EOF){

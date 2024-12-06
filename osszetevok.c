@@ -30,6 +30,9 @@ void osszetevot_felszabadit(char **osszetevok, int meret) {
 void osszetevot_fajlba_ir(Osszetevo lista){
     FILE *fp;
     fp =fopen("osszetevok.txt","w");
+    if (fp == NULL) {
+        printf("Fájlkezelési hiba! \n");
+    }
     for(int i=0;i<lista.meret;i++){
         fputs(lista.o_lista[i],fp);
     }

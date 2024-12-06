@@ -4,7 +4,6 @@ Szoda
 Gin
 Tonic
 Fagyasztott gyumolcs
-Sor
 Jagermeister
 Vodka
 Feher rum
@@ -16,3 +15,4 @@ Tequila
 Fekete rum
 Whisky
 Snapsz
+Sor

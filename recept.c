@@ -117,6 +117,7 @@ void receptet_fajlba_ir(Recept **eleje){
         fprintf(fp,";");
         fprintf(fp,"\n");
     }
+    fclose(fp);
 }
 
 //Hozzáad egy új receptet a recepteket tároló láncolt listához.
@@ -132,7 +133,7 @@ void uj_recept(Recept **eleje){
     int o_meret,valasz;
     printf("Hány összetevő legyen?");
     scanf("%d", &o_meret);
-    if (0 > o_meret || o_meret > 9223372036854775807){
+    if (0 > o_meret){
         printf("Hibás index!");
         return;
     }
@@ -192,7 +193,7 @@ void uj_recept(Recept **eleje){
 
     printf("Hány lépés legyen az elkészítési leírás?");
     scanf("%d",&el_meret);
-    if (0 > el_meret || el_meret > 9223372036854775807){
+    if (0 > el_meret){
         printf("Hibás index!");
         return;
     }
@@ -252,6 +253,7 @@ void uj_recept(Recept **eleje){
 // a sajátom. A függvény nem copy-paste, de nem teljesen a Prog1 tananyagra épül.
 // string = A használt string, stop = A delimiter karakter, esetünkben a ; | ? | ,
 char** elvalaszt(const char* string, const char* stop, int* hossz) {
+    // Megjegyzés: A megbeszéltek szerint nem kerül be a free függvény, mert a debugmalloc megbolondul. Itt fel kéne szabadítani a strdup-olt stringeket.
     char* temp = strdup(string);
     char* token;
     char** eredmeny = NULL;
@@ -436,7 +438,7 @@ void recept_modosit(Recept **eleje,int mennyi){
             int o_meret;
             printf("Hány összetevő legyen?");
             scanf("%d", &o_meret);
-            if (0 > o_meret || o_meret > 9223372036854775807){
+            if (0 > o_meret){
                 printf("Hibás index!");
                 return;
             }
@@ -491,7 +493,7 @@ void recept_modosit(Recept **eleje,int mennyi){
             int el_meret;
             printf("Hány lépés legyen az elkészítési leírás?");
             scanf("%d",&el_meret);
-            if (0 > el_meret || el_meret > 9223372036854775807){
+            if (0 > el_meret){
                 printf("Hibás index!");
                 return;
             }
